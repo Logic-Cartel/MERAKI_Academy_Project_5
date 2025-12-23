@@ -35,7 +35,10 @@ const getCategoryById = async (req, res) => {
       result: result.rows,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
@@ -53,8 +56,36 @@ const updateCategoryById = async (req, res) => {
     );
     res.status(200).json(result.rows);
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 };
 
-module.exports = { addNewCategory, getCategoryById, updateCategoryById };
+const deleteCategoryById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `
+      DELETE FROM categories WHERE id=$1`,
+      [id]
+    );
+    res.status(200).json({
+      success: true,
+      message: "Category Deleted Successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+module.exports = {
+  addNewCategory,
+  getCategoryById,
+  updateCategoryById,
+  deleteCategoryById,
+};
