@@ -90,7 +90,6 @@ const login = (req, res) => {
           user_first: user.firstName,
           country: user.country,
           role: user.role_id,
-         
         };
         const token = jwt.sign(payload, process.env.SECRET, {
           expiresIn: "2h",
@@ -111,4 +110,22 @@ const login = (req, res) => {
       });
     });
 };
-module.exports = { register, login };
+//====================getall User============
+const getAllUser = (req, res) => {
+  pool
+    .query(`SELECT * FROM users`)
+    .then((result) => {
+      res.status(200).json({
+        success: true,
+        message: "all users",
+        result: result.rows,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: "error  server",
+      });
+    });
+};
+module.exports = { register, login, getAllUser };
