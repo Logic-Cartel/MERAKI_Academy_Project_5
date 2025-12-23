@@ -31,16 +31,30 @@ const getCategoryById = async (req, res) => {
       [id]
     );
     res.status(200).json({
-        success:true,
-        result: result.rows
-    })
+      success: true,
+      result: result.rows,
+    });
   } catch (err) {
     console.log(err);
   }
 };
 
-// const updateCategoryById = async(req,res)=>{
-//     const {}
-// }
+const updateCategoryById = async (req, res) => {
+  const { id } = req.params;
+  const { name, description, imgsrc } = req.body;
+  try {
+    const result = await pool.query(
+      `
+            UPDATE categories 
+            SET name = $1, description=$2, imgsrc = $3 
+            WHERE id = $4
+            RETURNING *`,
+      [name, description, imgsrc, id]
+    );
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-module.exports = { addNewCategory,getCategoryById };
+module.exports = { addNewCategory, getCategoryById, updateCategoryById };
