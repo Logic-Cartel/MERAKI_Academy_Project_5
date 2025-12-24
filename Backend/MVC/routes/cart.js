@@ -11,7 +11,7 @@ const cartRouter = express.Router();
 cartRouter.post("/", addToCart);
 cartRouter.put("/update", updateCart);
 cartRouter.delete("/delete", deleteFromCart);
-cartRouter.put("/checkout");
+cartRouter.put("/checkout", checkout);
 //========================
 
 module.exports = cartRouter;
