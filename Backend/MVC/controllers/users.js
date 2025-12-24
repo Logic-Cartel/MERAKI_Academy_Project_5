@@ -42,11 +42,18 @@ const register = (req, res) => {
       );
     })
     .then((result) => {
-      res.status(201).json({
-        success: true,
-        message: "User created successfully",
-        user: result.rows[0],
-      });
+      const user = result.rows[0];
+      const userId = user.id;
+      return pool
+        .query(`INSERT INTO  cart (users_id) VALUES ($1) RETURNING *`, [userId])
+        .then((cartresult) => {
+          res.status(201).json({
+            success: true,
+            message: "User created successfully",
+            cart: cartresult.rows[0],
+            user: result.rows[0],
+          });
+        });
     })
     .catch((err) => {
       if (err.code === "23505") {
