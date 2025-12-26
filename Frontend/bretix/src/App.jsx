@@ -3,17 +3,19 @@ import { Route, Routes, Link, useNavigate } from "react-router-dom";
 import "./App.css";
 import Home from "./components/Shared componenets/Home";
 import Navbar from "./components/Shared componenets/Navbar";
-import Login from "./components/Login";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Login from "./components/Shared componenets/Login";
+import Register from "./components/Shared componenets/Register";
 
+ 
 function App() {
   return (
     <div>
-      <h1>hello world</h1>
+      <h1>Bretix</h1>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Login" element={<Login />} />
+        <Route path="/register" element={<Register/>}/>
       </Routes>
     </div>
   );
