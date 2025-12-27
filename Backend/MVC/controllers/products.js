@@ -31,6 +31,28 @@ const addNewProducts = (req, res) => {
     });
 };
 
+const getAllProducts = (req, res) => {
+  pool
+    .query(
+      `SELECT *
+    FROM products
+  `
+    )
+    .then((result) => {
+      res.status(200).json({
+        success: true,
+        products: result.rows,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: "Server error",
+        err: err.message,
+      });
+    });
+};
+
 const getProductById = (req, res) => {
   const productId = req.params.id;
 
@@ -106,4 +128,5 @@ module.exports = {
   getProductById,
   updateProductById,
   deleteProductById,
+  getAllProducts,
 };
