@@ -9,6 +9,7 @@ const Navbar = () =>{
             <button onClick={()=>{navigate("/register")}}>Register</button> 
             <button>Stores</button>
             <button>Products</button>
+            <button>Buy by Categories</button>
             <button>Contact Us</button>
             
         </div>

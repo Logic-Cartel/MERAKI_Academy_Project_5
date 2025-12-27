@@ -12,6 +12,7 @@ const register = (req, res) => {
     date_of_birthday,
     email,
     password,
+    role_id,
   } = req.body;
 
   bcrypt
@@ -26,8 +27,9 @@ const register = (req, res) => {
           phoneNumber,
           date_of_birthday,
           email,
-          password
-        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+          password,
+          role_id
+        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
         RETURNING *`,
         [
           firstName,
@@ -38,6 +40,7 @@ const register = (req, res) => {
           date_of_birthday,
           email,
           hashedPassword,
+          role_id
         ]
       );
     })

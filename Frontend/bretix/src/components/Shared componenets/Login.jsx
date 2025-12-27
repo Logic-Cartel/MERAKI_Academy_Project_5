@@ -19,6 +19,8 @@ function Login() {
         localStorage.setItem("token", result.data.token);
         setToken("token", result.data.token);
         console.log(result.data.token);
+        console.log(result.data);
+        
         
         navigate("/");
       })
