@@ -1,0 +1,71 @@
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 4%;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.nav-group {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+
+.nav-btn {
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #444;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    color: #1a5d1a;
+
+}
+
+
+.nav-logo {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #1a5d1a;
+    cursor: pointer;
+    letter-spacing: -1px;
+}
+
+
+.register-btn {
+    background-color: #1a5d1a;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.3s;
+}
+
+.register-btn:hover {
+    background-color: #144514;
+}
+
+
+.auth-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+    border-left: 1px solid #ddd;
+    padding-left: 15px;
+}
