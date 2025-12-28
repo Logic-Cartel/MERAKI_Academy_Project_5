@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { useDispatch } from "react-redux";
+import { cleareRole, setRole } from "../../redux/roleSlice";
+import { useSelector } from "react-redux";
+
 
 function Login() {
+  const dispatch = useDispatch()
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,9 +28,15 @@ function Login() {
 
     setError("");
 
+    // const roleState = useSelector((state)=>{
+    //   return role
+    // })
+
     axios
       .post("http://localhost:5000/users/login", { email, password })
       .then((result) => {
+        console.log(result.data);
+        dispatch(setRole(result.data.role))
         localStorage.setItem("token", result.data.token);
         setToken(result.data.token);
         navigate("/");
