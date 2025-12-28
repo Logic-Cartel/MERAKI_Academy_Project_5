@@ -1,52 +1,31 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./Products.css";
+import "./ProductsGrid.css";
 import { Link } from "react-router-dom";
 
 function Products() {
   const [products, setProducts] = useState([]);
-  const sliderRef = useRef(null);
-
+  const [showNav, setShowNav] = useState(true);
   useEffect(() => {
     axios
       .get("http://localhost:5000/products/all")
-      .then((res) => setProducts(res.data.products))
+      .then((res) => {
+        setProducts(res.data.products);
+      })
       .catch((err) => console.log(err));
   }, []);
-
-  const scroll = (direction) => {
-    if (sliderRef.current) {
-      const { scrollLeft, clientWidth } = sliderRef.current;
-      const scrollTo =
-        direction === "left"
-          ? scrollLeft - clientWidth / 2
-          : scrollLeft + clientWidth / 2;
-
-      sliderRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
-    }
-  };
-
+  
   return (
     <div className="container-main">
       <div className="header-section">
         <p className="sub-title">Eco Essentials Planet-Friendly</p>
-        <div className="title-row">
-          <h2 className="main-title">
-            Bestselling <span>✨ Products</span>
-          </h2>
-          <div className="slider-btns">
-            <button className="nav-btn prev" onClick={() => scroll("left")}>
-              ←
-            </button>
-            <button className="nav-btn next" onClick={() => scroll("right")}>
-              →
-            </button>
-          </div>
-        </div>
+        <h2 className="main-title">
+          Bestselling <span>✨ Products</span>
+        </h2>
       </div>
 
-      <div className="products-slider" ref={sliderRef}>
-        {products.map((item, i) => (
+      <div className="products-grid">
+        {products.map((item) => (
           <Link
             to={`/product/${item.id}`}
             className="product-item"
