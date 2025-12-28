@@ -13,6 +13,7 @@ import Login from "./components/Shared componenets/Login";
 import Register from "./components/Shared componenets/Register";
 import Products from "./components/Products";
 import ProductDetails from "./components/ProductDetails";
+import ImgSlider from "./components/ImgSlider";
 function App() {
   const [showNav, setShowNav] = useState(true);
   const location = useLocation();
@@ -28,7 +29,15 @@ function App() {
       <h1>Bretix</h1>
       {showNav && <Navbar />}
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <>
+              {" "}
+              <ImgSlider /> <br /> <Home />
+            </>
+          }
+        />
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/Products" element={<Products />} />
