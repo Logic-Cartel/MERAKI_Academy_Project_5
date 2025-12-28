@@ -8,7 +8,7 @@ const Navbar = () =>{
             <button onClick={()=>{navigate("/Login")}}>Login</button>
             <button onClick={()=>{navigate("/register")}}>Register</button> 
             <button>Stores</button>
-            <button onClick={()=>{navigate("/Products")}}>Products</button>
+            <button onClick={() => navigate("/products")}>Products</button>           
             <button>Buy by Categories</button>
             <button>Contact Us</button>
             
