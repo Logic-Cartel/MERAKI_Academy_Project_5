@@ -1,7 +1,8 @@
 import {configureStore} from "@reduxjs/toolkit"
+import roleReducer from "./roleSlice"
 
 export default configureStore({
     reducer:{
-        nothing:0
+        role: roleReducer
     }
 })
