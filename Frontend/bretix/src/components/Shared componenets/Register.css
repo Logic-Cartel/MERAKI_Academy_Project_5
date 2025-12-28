@@ -1,0 +1,72 @@
+.register-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #2f2f2f, #b5b5b5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.register-card {
+    background-color: #f6f5ef;
+    padding: 35px;
+    width: 420px;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.register-card h2 {
+    text-align: center;
+    color: #224037;
+    margin-bottom: 5px;
+}
+
+.register-card p {
+    text-align: center;
+    font-size: 14px;
+    color: #6b6b6b;
+    margin-bottom: 20px;
+}
+
+.register-card input {
+    width: 100%;
+    padding: 11px 14px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #d6d6d6;
+    font-size: 14px;
+}
+
+.register-card input:focus {
+    outline: none;
+    border-color: #224037;
+}
+
+.owner-toggle {
+    margin-bottom: 15px;
+    font-size: 13px;
+    color: #224037;
+}
+
+.register-card hr {
+    margin: 20px 0;
+    border: none;
+    height: 1px;
+    background: #ddd;
+}
+
+.register-card button {
+    width: 100%;
+    padding: 12px;
+    background-color: #224037;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.register-card button:hover {
+    background-color: #1a312a;
+}

@@ -7,8 +7,10 @@ const {
   updateProductById,
   deleteProductById,
   getAllProducts,
+  getTop10Products,
 } = require("../controllers/products");
 
+productsRouter.get("/top10",getTop10Products)
 productsRouter.post("/", addNewProducts);
 productsRouter.get("/all", getAllProducts);
 productsRouter.get("/:id", getProductById);

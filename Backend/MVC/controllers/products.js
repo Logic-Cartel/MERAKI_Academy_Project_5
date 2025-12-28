@@ -123,10 +123,23 @@ const deleteProductById = async (req, res) => {
     });
   }
 };
+
+const getTop10Products = async(req,res)=>{
+  try {
+    const result = await pool.query(`SELECT *
+      FROM products 
+      ORDER BY rate DESC NULLS LAST
+      LIMIT 10`)
+      res.status(200).json({success:true,result:result.rows})
+
+  }catch(err){console.log(err);
+  }
+}
 module.exports = {
   addNewProducts,
   getProductById,
   updateProductById,
   deleteProductById,
   getAllProducts,
+  getTop10Products,
 };
