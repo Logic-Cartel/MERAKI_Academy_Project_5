@@ -26,7 +26,7 @@ function App() {
   }, [location.pathname]);
   return (
     <div>
-      <h1>Bretix</h1>
+
       {showNav && <Navbar />}
       <Routes>
         <Route

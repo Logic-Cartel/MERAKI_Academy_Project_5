@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import "./ProductssGrid.css"; // تأكد من استيراد نفس ملف التنسيق
+import "./ProductssGrid.css";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Home = () => {
     axios
       .get("http://localhost:5000/products/top10")
       .then((res) => {
-        // تأكد من أن res.data.result هو المصفوفة المطلوبة
+      
         setTop10Products(res.data.result);
       })
       .catch((err) => {
@@ -21,7 +21,7 @@ const Home = () => {
 
   return (
     <div className="container-main">
-      {/* قسم العنوان العلوي */}
+    
       <div className="header-section">
         <p className="sub-title">Premium Selection</p>
         <h2 className="main-title">
@@ -29,7 +29,7 @@ const Home = () => {
         </h2>
       </div>
 
-      {/* شبكة المنتجات بنفس التصميم المطلوب */}
+ 
       <div className="products-grid">
         {top10Products.map((product) => (
           <Link
@@ -39,7 +39,7 @@ const Home = () => {
           >
             <div className="product-card">
               <div className="image-wrapper">
-                {/* وسم "Best Seller" بدلاً من New كونه توب 10 */}
+             
                 <span className="product-badge">Top Rated</span>
                 <img
                   src={product.imgsrc}
@@ -49,7 +49,7 @@ const Home = () => {
               </div>
 
               <div className="product-info">
-                {/* نقاط الألوان الاختيارية */}
+         
                 <div className="color-options">
                   <span className="dot dot-1"></span>
                   <span className="dot dot-2"></span>
@@ -63,7 +63,7 @@ const Home = () => {
                   <button 
                     className="add-to-cart-btn"
                     onClick={(e) => {
-                      e.preventDefault(); // يمنع الانتقال لصفحة المنتج عند الضغط على السلة
+                      e.preventDefault(); 
                       console.log("Added to cart:", product.id);
                     }}
                   >
