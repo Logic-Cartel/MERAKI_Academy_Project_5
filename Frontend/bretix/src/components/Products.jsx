@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import "./Products.css"; // تأكد من استيراد ملف الـ CSS
+import "./Products.css"; 
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -13,7 +13,7 @@ function Products() {
       .catch((err) => console.log(err));
   }, []);
 
-  // وظيفة تحريك السلايدر يمين ويسار
+  
   const scroll = (direction) => {
     if (sliderRef.current) {
       const { scrollLeft, clientWidth } = sliderRef.current;
