@@ -28,14 +28,12 @@ function Login() {
 
     setError("");
 
-    // const roleState = useSelector((state)=>{
-    //   return role
-    // })
+   
+    
 
     axios
       .post("http://localhost:5000/users/login", { email, password })
       .then((result) => {
-        console.log(result.data);
         dispatch(setRole(result.data.role))
         localStorage.setItem("token", result.data.token);
         localStorage.setItem("role",result.data.role)
@@ -46,6 +44,10 @@ function Login() {
         setError("Invalid email or password");
       });
   };
+
+    const roleState = useSelector((state)=>{
+      return state.role.role
+    })
 
   return (
     <div className="login-page">

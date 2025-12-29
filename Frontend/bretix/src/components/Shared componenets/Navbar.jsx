@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const navigate = useNavigate();
