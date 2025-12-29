@@ -27,7 +27,7 @@ function App() {
   return (
     <div>
 
-      {showNav && <Navbar />}
+      <Navbar />
       <Routes>
         <Route
           path="/"

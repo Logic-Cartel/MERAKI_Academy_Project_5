@@ -6,10 +6,7 @@ import { useSelector } from "react-redux";
 const Navbar = () => {
   const navigate = useNavigate();
   const role = localStorage.getItem("role") || null
-  // const role = useSelector((state)=> state.role.role
-  // )
-//  console.log(role);
- 
+
   return (
     <nav className="navbar-container">
       <div className="nav-group left">
@@ -27,6 +24,7 @@ const Navbar = () => {
       </div>
 
       <div className="nav-group right">
+        
         <button className="nav-btn">Contact Us</button>
         <div className="auth-group">
           {role === null && <button className="nav-btn" onClick={() => navigate("/Login")}>
@@ -38,12 +36,7 @@ const Navbar = () => {
           >
             Register
           </button>}
-          {role !== null && <button
-            className="logout-btn"
-            onClick={() => navigate("/")}
-          >
-            Logout
-          </button>}
+          {role !== null && <button onClick={()=>{localStorage.clear(), navigate("/")}}>Logout</button>}
         </div>
       </div>
     </nav>
