@@ -1,9 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const role = localStorage.getItem("role") || null
 
   return (
     <nav className="navbar-container">
@@ -14,7 +16,7 @@ const Navbar = () => {
         <button className="nav-btn" onClick={() => navigate("/products")}>
           Products
         </button>
-        <button className="nav-btn">Stores</button>
+        <button className="nav-btn" onClick={()=>{navigate("/stores")}}>Stores</button>
       </div>
 
       <div className="nav-logo" onClick={() => navigate("/")}>
@@ -22,18 +24,19 @@ const Navbar = () => {
       </div>
 
       <div className="nav-group right">
-        <button className="nav-btn">Buy by Categories</button>
+        
         <button className="nav-btn">Contact Us</button>
         <div className="auth-group">
-          <button className="nav-btn" onClick={() => navigate("/Login")}>
+          {role === null && <button className="nav-btn" onClick={() => navigate("/Login")}>
             Login
-          </button>
-          <button
+          </button>}
+          {role === null && <button
             className="register-btn"
             onClick={() => navigate("/register")}
           >
             Register
-          </button>
+          </button>}
+          {role !== null && <button onClick={()=>{localStorage.clear(), navigate("/")}}>Logout</button>}
         </div>
       </div>
     </nav>

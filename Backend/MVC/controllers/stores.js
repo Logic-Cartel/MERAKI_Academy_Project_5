@@ -100,9 +100,22 @@ const deleteStoreById = async (req, res) => {
   }
 };
 
+const getAllStores = async(req,res)=>{
+  try {
+    const result = await pool.query(`SELECT * FROM store`)
+    res.status(200).json({
+      success:true,
+      result:result.rows
+    })
+  }catch(err){
+    console.log(err);
+  }
+}
+
 module.exports = {
   addNewStore,
   getStoreById,
   updateStoreById,
   deleteStoreById,
+  getAllStores,
 };

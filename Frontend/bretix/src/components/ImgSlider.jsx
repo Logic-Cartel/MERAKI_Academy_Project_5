@@ -1,6 +1,7 @@
 import React from "react";
 import { Fade } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
+import "./ImgSlider.css"; 
 
 function ImgSlider() {
   const slider = [
@@ -10,30 +11,26 @@ function ImgSlider() {
     { id: 4, URL: `https://img.freepik.com/free-vector/realistic-podium-horizontal-banner_52683-145720.jpg?w=740`, caption: "realistic-podium" },
   ];
 
-
   const properties = {
-    duration: 3000,     
+    duration: 3000,
     transitionDuration: 500,
-    infinite: true,       
-    indicators: true,     
-    arrows: true,         
-    pauseOnHover: true, 
+    infinite: true,
+    indicators: true,
+    arrows: true,
+    pauseOnHover: true,
   };
 
   return (
-    <div className="slide-container">
+    <div className="full-width-slider">
       <Fade {...properties}>
         {slider.map((product) => (
           <div key={product.id} className="each-fade">
-            <img
-              src={product.URL}
-              alt={product.caption}
-              style={{ 
-                width: "100%",   
-                height: "500px", 
-                objectFit: "cover" 
-              }}
-            />
+            <div 
+              className="image-container"
+              style={{ backgroundImage: `url(${product.URL})` }}
+            >
+           
+            </div>
           </div>
         ))}
       </Fade>

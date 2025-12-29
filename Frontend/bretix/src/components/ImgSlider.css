@@ -1,0 +1,33 @@
+
+.full-width-slider {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  overflow: hidden;
+}
+
+.image-container {
+  width: 100vw;
+  height: 500px; 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.each-fade img {
+  width: 100vw;
+  height: 500px;
+  object-fit: cover;
+}
+
+
+body {
+  overflow-x: hidden;
+}
