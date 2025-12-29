@@ -66,6 +66,14 @@ const Register = () => {
         });
       }
 
+      const loginResult = await axios.post("http://localhost:5000/users/login",
+        {email:email,password:password})
+        // console.log(loginResult.data);
+        
+        localStorage.setItem("token", loginResult.data.token);
+        localStorage.setItem("role",loginResult.data.role)
+        
+
       navigate("/");
     } catch (err) {
       console.log(err);
