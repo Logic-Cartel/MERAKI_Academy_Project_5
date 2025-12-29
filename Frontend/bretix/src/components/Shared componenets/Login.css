@@ -1,25 +1,27 @@
-/* الحاوية الرئيسية تغطي كامل الشاشة وتلغي أي هوامش جانبية */
+
 .login-page {
   width: 100vw;
-  min-height: 100vh;
+ 
+  height: calc(100vh - 80px); 
   margin: 0;
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* تدرج لوني يتماشى مع الـ Register والنمط البيئي */
+
   background: linear-gradient(135deg, #f0f4f1 0%, #d9e4dd 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
 }
 
-/* كرت الدخول */
+
 .login-card {
   background: rgba(255, 255, 255, 0.95);
   padding: 50px 40px;
   border-radius: 24px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
   width: 100%;
-  max-width: 450px; /* العرض أصغر قليلاً من التسجيل لأنه حقوله أقل */
+  max-width: 450px;
   text-align: center;
   animation: fadeIn 0.6s ease-out;
 }
@@ -30,7 +32,7 @@
 }
 
 .login-card h2 {
-  color: #1b4332; /* الأخضر الغامق الخاص بـ Bretix */
+  color: #1b4332; 
   font-size: 2.2rem;
   margin-bottom: 10px;
   font-weight: 700;
@@ -42,7 +44,7 @@
   margin-bottom: 35px;
 }
 
-/* تنسيق حقول الإدخال */
+
 .login-card input {
   width: 100%;
   padding: 14px 18px;
@@ -52,7 +54,7 @@
   background-color: #f9f9f9;
   font-size: 15px;
   transition: all 0.3s ease;
-  box-sizing: border-box; /* لضمان عدم خروج الإدخال عن الكرت */
+  box-sizing: border-box; 
 }
 
 .login-card input:focus {
@@ -62,7 +64,7 @@
   outline: none;
 }
 
-/* زر الدخول */
+
 .login-card button {
   width: 100%;
   padding: 15px;
@@ -83,7 +85,7 @@
   box-shadow: 0 5px 15px rgba(27, 67, 50, 0.2);
 }
 
-/* رسالة الخطأ */
+
 .error-msg {
   background-color: #fff2f2;
   color: #d90429;
