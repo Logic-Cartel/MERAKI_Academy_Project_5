@@ -10,19 +10,21 @@
     top: 0;
     z-index: 1000;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
 }
 
 .nav-group {
     display: flex;
     gap: 15px;
     align-items: center;
+
 }
 
 
 .nav-btn {
     background: none;
     border: none;
-    font-size: 0.9rem;
+    font-size: 1.30rem;
     font-weight: 500;
     color: #444;
     cursor: pointer;

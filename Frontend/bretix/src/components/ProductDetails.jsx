@@ -2,13 +2,18 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import "./ProductDetails.css";
+import { FaPlus, FaMinus, FaShoppingCart } from "react-icons/fa";
 
 const ProductDetails = () => {
   const { id } = useParams();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [quantity, setQuantity] = useState(1);
+  const increseQu = () => setQuantity((prev) => prev + 1);
+  const decreseQu = () => {
+    if (quantity > 1) setQuantity((prev) => prev - 1);
+  };
   useEffect(() => {
     axios
       .get(`http://localhost:5000/products/${id}`)
@@ -38,6 +43,18 @@ const ProductDetails = () => {
           <p className="product-desc">{product.description}</p>
 
           <div className="rating">⭐ {product.rate}</div>
+          <div className="quantity-section">
+            <span className="qty-label">Quantity</span>
+            <div className="qty-selector">
+              <button onClick={decreseQu} className="qty-btn">
+                <FaMinus />
+              </button>
+              <span className="qty-value">{quantity}</span>
+              <button onClick={increseQu} className="qty-btn">
+                <FaPlus />
+              </button>
+            </div>
+          </div>
 
           <div className="details-footer">
             <span className="price">${product.price}</span>

@@ -1,0 +1,126 @@
+.main-footer {
+    background-color: #224037; /* اللون الأخضر الغامق الخاص بموقعك */
+    color: #ffffff;
+    padding: 60px 0 20px 0;
+    width: 100%;
+    font-family: 'Arial', sans-serif;
+}
+
+.main-footer {
+    background-color: #224037;
+    color: #ffffff;
+    padding: 60px 0 20px 0;
+    width: 100vw; /* يأخذ عرض الشاشة بالكامل */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+.footer-container {
+    max-width: 1200px; /* المحتوى يبقى في المنتصف ومرتب */
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr;
+    gap: 40px;
+    padding: 0 20px; /* مسافة داخلية صغيرة للأمان */
+}
+.footer-section h3 {
+    font-size: 20px;
+    margin-bottom: 25px;
+    color: #f6f5ef; /* لون كريمي خفيف للعنوان */
+    position: relative;
+}
+
+.footer-section h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 40px;
+    height: 2px;
+    background-color: #4caf50; /* خط أخضر فاتح تحت العنوان */
+}
+
+.footer-logo {
+    font-size: 32px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.footer-section p {
+    line-height: 1.8;
+    color: #d1d1d1;
+    font-size: 15px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 12px;
+}
+
+.footer-section ul li a {
+    color: #d1d1d1;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-section ul li a:hover {
+    color: #fff;
+    padding-left: 5px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.social-icons a {
+    color: #224037;
+    background: #fff;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.social-icons a:hover {
+    background: #4caf50;
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+    color: #aaa;
+}
+
+/* لجعل الفوتر متجاوب مع الموبايل */
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .footer-section h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .social-icons {
+        justify-content: center;
+    }
+}

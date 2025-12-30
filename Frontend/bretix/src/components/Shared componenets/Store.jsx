@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "./SingleStore.css"; 
+import "./Singlestore1.css";
 
 const Store = () => {
   const { id } = useParams();
-  const [store, setStore] = useState(null); 
+  const [store, setStore] = useState(null);
 
   useEffect(() => {
     axios
@@ -18,7 +18,6 @@ const Store = () => {
         console.log(err);
       });
   }, [id]);
-
 
   if (!store) {
     return (
@@ -33,23 +32,30 @@ const Store = () => {
     <div className="single-store-page">
       <div className="store-hero-section">
         <div className="store-content-wrapper">
-  
           <div className="store-image-box">
             <img src={store.logo} alt={store.title} />
           </div>
 
-       
           <div className="store-details-box">
             <span className="badge">Official Store</span>
             <h2>{store.title}</h2>
             <p className="store-desc">{store.description}</p>
-            
-           
 
             <div className="action-buttons">
-              <button className="wishlist-btn">♥</button>
+              <button className="wishlist-btn">♥ Favorite</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="products-area">
+        <h3 style={{ color: "#1b4332", marginBottom: "20px" }}>
+          Available Products
+        </h3>
+        <div className="products-grid">
+          <p style={{ color: "#999" }}>
+            Products list will be displayed here...
+          </p>
         </div>
       </div>
     </div>
