@@ -38,6 +38,7 @@ function Login() {
         localStorage.setItem("token", result.data.token);
         localStorage.setItem("role",result.data.role)
         localStorage.setItem("storeId", result.data.storeId)
+        localStorage.setItem("storeTitle", result.data.storeTitle)
         setToken(result.data.token);
         navigate("/");
       })

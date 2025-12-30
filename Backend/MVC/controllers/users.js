@@ -114,6 +114,7 @@ const login = (req, res) => {
               userId: user.id,
               role: user.role_id,
               storeId: response.rows[0].id,
+              storeTitle:response.rows[0].title
             });
           })
           .catch((err) => {
