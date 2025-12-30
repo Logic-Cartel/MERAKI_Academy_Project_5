@@ -1,6 +1,6 @@
 .stores-container {
     padding: 40px 5%;
-    background-color: #f8faf9;
+    background-color: #ffffff;
     min-height: 100vh;
 }
 
@@ -46,7 +46,7 @@
     width: 100%;
     height: 100px;
     overflow: hidden;
-    background-color: #f0f4f1;
+    background-color: #f6f5ef;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -72,7 +72,8 @@
 .store-info h3 {
     color: #1b4332;
     margin: 0 0 10px 0;
-    font-size: 1.4rem;
+    font-size: 1 rem;
+    text-align: center;
 }
 
 .store-info p {
@@ -80,14 +81,14 @@
     font-size: 0.9rem;
     line-height: 1.5;
     height: 45px;
-   
+
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
 
-/* زر "Visit Store" */
+
 .visit-btn {
     margin-top: 15px;
     padding: 10px 20px;

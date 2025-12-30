@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Stores.css"; 
+import "./Stores.css";
 
 const Stores = () => {
   const navigate = useNavigate();
@@ -27,15 +27,15 @@ const Stores = () => {
 
       <div className="stores-grid">
         {stores.map((store) => (
-          <div 
-            key={store.id} 
-            className="store-card" 
+          <div
+            key={store.id}
+            className="store-card"
             onClick={() => navigate(`/stores/${store.id}`)}
           >
             <div className="store-image-wrapper">
               <img src={store.logo} alt={store.title} />
             </div>
-            
+
             <div className="store-info">
               <h3>{store.title}</h3>
               <p>{store.description}</p>
