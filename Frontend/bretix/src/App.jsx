@@ -16,6 +16,7 @@ import ProductDetails from "./components/ProductDetails";
 import ImgSlider from "./components/ImgSlider";
 import Stores from "./components/Shared componenets/Stores";
 import Store from "./components/Shared componenets/Store";
+import OwnerStoreManagement from "./components/Owners/OwnerStoreManagement";
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/stores" element={<Stores/>}/>
         <Route path="/stores/:id" element={<Store/>}/>
+        <Route path="/StoreManagement" element={<OwnerStoreManagement/>}/>
       </Routes>
     </div>
   );

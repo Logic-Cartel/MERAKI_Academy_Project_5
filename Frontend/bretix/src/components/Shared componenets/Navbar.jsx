@@ -24,7 +24,8 @@ const Navbar = () => {
       </div>
 
       <div className="nav-group right">
-        
+
+        {role === "2" && <button className="nav-btn" onClick={() => navigate("/StoreManagement")}>Store Management</button>}
         <button className="nav-btn">Contact Us</button>
         <div className="auth-group">
           {role === null && <button className="nav-btn" onClick={() => navigate("/Login")}>
