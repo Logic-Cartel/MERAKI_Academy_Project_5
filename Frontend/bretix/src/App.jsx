@@ -21,6 +21,7 @@ import AddNewProduct from "./components/Owners/AddNewProduct";
 import AllProducts from "./components/Owners/AllProducts";
 import Footer from "./components/Shared componenets/Footer";
 import ProductView from "./components/Owners/ProductView";
+import Orders from "./components/Shared componenets/Orders";
 
 
 function App() {
@@ -43,7 +44,7 @@ function App() {
           element={
             <>
               {" "}
-              <ImgSlider /> <br /> <Stores /> <br /> <Home />  
+              <ImgSlider /> <br /> <Stores /> <br /> <Orders/> <br />   <Home />  
             </>
           }
         />
@@ -57,6 +58,8 @@ function App() {
         <Route path="/stores/:id/addnewproduct" element={<AddNewProduct/>} />
         <Route path="/:id/allproducts" element={<AllProducts/>}/>
         <Route path="/allproducts/:productId" element={<ProductView/>}/>
+                <Route path="/orders" element={<Orders/>}/>
+
       </Routes>
       <Footer/>
     </div>
