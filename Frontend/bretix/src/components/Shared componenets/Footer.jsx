@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className="main-footer">
       <div className="footer-container">
-        {/* قسم التعريف بالشعار */}
+     
         <div className="footer-section about">
           <h2 className="footer-logo">Bretix</h2>
           <p>
@@ -21,7 +21,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* قسم الروابط السريعة */}
+
         <div className="footer-section links">
           <h3>Quick Links</h3>
           <ul>
@@ -32,17 +32,17 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* قسم التواصل */}
+      
         <div className="footer-section contact">
           <h3>Contact Info</h3>
-          <p>📍 123 Eco Street, Amman, Jordan</p>
-          <p>📞 +962 700 000 000</p>
+          <p>📍  Amman, Jordan</p>
+          <p>📞 +962775570312</p>
           <p>✉️ support@bretix.com</p>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2024 Bretix. All Rights Reserved.</p>
+        <p>&copy; 2025-2026 Bretix. All Rights Reserved.</p>
       </div>
     </footer>
   );
