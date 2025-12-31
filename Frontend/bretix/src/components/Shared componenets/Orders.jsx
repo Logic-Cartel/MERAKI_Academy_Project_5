@@ -7,20 +7,34 @@ function Orders() {
   const [token, setToken] = useState(null);
   const [orders, setOrders] = useState([]);
   useEffect(() => {
+    const savedToken = localStorage.getItem("token");
     axios
-      .get(`http://localhost:5000/cart/getCartWhereIsDeletedTrue`)
+      .get(`http://localhost:5000/cart/getCartWhereIsDeletedTrue`, {
+        headers: {
+          Authorization: `barerr ${savedToken}`,
+        },
+      })
       .then((result) => {
-        setToken(result.data.token);
-        localStorage.setItem(result.data.token);
-        setOrders(result.data.token);
-        console.log(result.data.token);
+        //setToken(result.data.token);
+        setOrders(result.data.items);
+        console.log(result.data.items);
         setIs_deleted(true);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-  return <div>{orders}</div>;
+  return (
+    <div>
+      {orders.map((item, i) => {
+        return (
+          <div key={i}>
+            <span>{item.items}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export default Orders;

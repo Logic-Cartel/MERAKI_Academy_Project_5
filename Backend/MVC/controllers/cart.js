@@ -88,7 +88,7 @@ const getCart = async (req, res) => {
       SELECT c.*, p.title, p.price, p.imgsrc
       FROM cart c
       JOIN products p ON c.products_id = p.id
-      WHERE c.users_id = $1 AND c.is_deleted = false
+      WHERE c.users_id = $1 AND c.is_deleted = true
       `,
       [userId]
     );
