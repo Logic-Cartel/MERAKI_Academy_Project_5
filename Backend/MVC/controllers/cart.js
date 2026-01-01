@@ -148,9 +148,28 @@ const getCartWithProducts = (req, res) => {
       });
     });
 };
+const removeFromCart = (req, res) => {
+  const cartProductId = req.params.id;
+  const userId = req.token.user_id;
+
+  pool
+    .query(
+      `DELETE FROM cart_products 
+       WHERE id = $1 
+       AND cart IN (SELECT id FROM cart WHERE users_id = $2)`,
+      [cartProductId, userId]
+    )
+    .then(() => {
+      res.json({ success: true, message: "Product removed from cart" });
+    })
+    .catch((err) => {
+      res.status(500).json({ success: false, error: err.message });
+    });
+};
 module.exports = {
   addToCart,
   getCartWereIsDeletedFalse,
   getCartWhereIsDeletedTure,
-  getCartWithProducts
+  getCartWithProducts,
+  removeFromCart
 };

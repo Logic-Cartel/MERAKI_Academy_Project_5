@@ -4,6 +4,7 @@ const {
   getCartWereIsDeletedFalse,
   getCartWhereIsDeletedTure,
   getCartWithProducts,
+  removeFromCart,
 } = require("../controllers/cart");
 const authentication = require("../middlewares/authentication");
 const cartRouter = express.Router();
@@ -18,9 +19,10 @@ cartRouter.get(
 cartRouter.get(
   "/getCartWhereIsDeletedTure",
   authentication,
-  getCartWhereIsDeletedTure,
+  getCartWhereIsDeletedTure
 );
 cartRouter.get("/with-products", authentication, getCartWithProducts);
+cartRouter.delete("/:id",authentication, removeFromCart)
 //========================
 
 module.exports = cartRouter;
