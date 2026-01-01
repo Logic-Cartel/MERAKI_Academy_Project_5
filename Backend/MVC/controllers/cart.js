@@ -2,18 +2,47 @@ const { pool } = require("../models/db");
 
 const addToCart = (req, res) => {
   const { products_id, cart_id, quantity } = req.body;
-    console.log("BODY:", req.body);
+  const userId = req.token.user_id;
+
+  if (!products_id || !cart_id || !quantity) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required information",
+    });
+  }
+
+  if (quantity < 1 || quantity > 99) {
+    return res.status(400).json({
+      success: false,
+      message: "Quantity must be between 1 and 99",
+    });
+  }
 
   pool
     .query(
-      `
-      INSERT INTO cart_products (cart, product,
+      `INSERT INTO cart_products (cart, product,
       quantity)
       VALUES ($1, $2,$3)
-      RETURNING *
-      `,
+      RETURNING *`,
       [cart_id, products_id, quantity]
     )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res.status(403).json({
+          success: false,
+          message: "This cart doesn't belong to you",
+        });
+      }
+
+      return pool.query(
+        `INSERT INTO cart_products (cart, product, quantity)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (cart, product) 
+         DO UPDATE SET quantity = cart_products.quantity + $3
+         RETURNING *`,
+        [cart_id, products_id, quantity]
+      );
+    })
     .then((result) => {
       res.status(201).json({
         success: true,
@@ -22,14 +51,42 @@ const addToCart = (req, res) => {
       });
     })
     .catch((err) => {
+      console.error("Error adding to cart:", err);
       res.status(500).json({
         success: false,
-        error: err.message,
+        message: "Error adding product to cart",
       });
     });
 };
 
 const getCartWereIsDeletedFalse = (req, res) => {
+  // const userId = req.token.user_id;
+
+  // pool
+  //   .query(
+  //     `
+  //   SELECT
+  //     cart_products.id,
+  //     cart_products.quantity,
+  //     products.id AS product_id,
+  //     products.title,
+  //     products.price,
+  //     products.imgsrc,
+  //     cart.id AS cart_id
+  //   FROM cart
+  //   JOIN cart_products ON cart.id = cart_products.cart
+  //   JOIN products ON cart_products.product = products.id
+  //   WHERE cart.is_deleted = false
+  //     AND cart.users_id = $1
+  //   `,
+  //     [userId]
+  //   )
+  //   .then((result) => {
+  //     res.json({ success: true, items: result.rows });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).json({ success: false, error: err.message });
+  //   });
   const userId = req.token.user_id;
 
   pool
