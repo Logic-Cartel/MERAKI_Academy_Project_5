@@ -11,7 +11,7 @@
     background: #ffffff;
     display: flex;
     flex-direction: row;
-    /* الصورة بجانب المعلومات */
+
     gap: 40px;
     width: 100%;
     max-width: 1000px;
@@ -20,7 +20,7 @@
     box-shadow: 0 15px 35px rgba(34, 64, 55, 0.1);
 }
 
-/* قسم الصورة */
+
 .image-preview-section {
     flex: 1;
     display: flex;
@@ -36,7 +36,7 @@
     border: 1px solid #e0e7e0;
 }
 
-/* قسم التفاصيل */
+
 .details-edit-section {
     flex: 1.5;
     display: flex;
@@ -90,7 +90,7 @@
     box-shadow: 0 0 8px rgba(76, 175, 80, 0.1);
 }
 
-/* الأزرار */
+
 .action-buttons {
     display: flex;
     gap: 15px;
@@ -130,7 +130,7 @@
     background-color: #cc0000;
 }
 
-/* التجاوب مع الشاشات الصغيرة */
+
 @media (max-width: 850px) {
     .edit-card {
         flex-direction: column;
