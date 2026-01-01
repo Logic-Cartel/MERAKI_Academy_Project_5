@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./ProductView.css"; 
+import Swal from "sweetalert2";
 
 const ProductView = () => {
   const navigate = useNavigate();
@@ -26,29 +27,98 @@ const ProductView = () => {
   }, [productId]);
 
   const confirm = async () => {
+  // 1. سؤال المستخدم عن التأكيد
+  const result = await Swal.fire({
+    title: "Save Changes?",
+    text: "Are you sure you want to update this product?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#1a3c34",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, Update",
+    cancelButtonText: "Cancel",
+  });
+
+  // 2. إذا كبس "Yes" نبدأ عملية التحميل
+  if (result.isConfirmed) {
+    // إظهار بوكس التحميل (Loading)
+    Swal.fire({
+      title: "Updating...",
+      text: "Please wait while we save your changes.",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading(); // تشغيل حركة الـ Spinner
+      },
+    });
+
     try {
+      // إرسال الطلب للسيرفر
       await axios.put(
         `http://localhost:5000/products/${productId}/update`,
         { ...editedProduct }
       );
+      
       setProduct(editedProduct);
-      alert("Product updated successfully!");
+
+      // 3. إظهار بوكس النجاح وإغلاق الـ Loading تلقائياً
+      Swal.fire({
+        title: "Success!",
+        text: "Product updated successfully.",
+        icon: "success",
+        confirmButtonColor: "#1a3c34",
+        timer: 1500
+      });
+
     } catch (err) {
       console.log(err);
+      // إظهار بوكس الخطأ في حال فشل الطلب
+      Swal.fire({
+        title: "Error!",
+        text: "Could not update the product.",
+        icon: "error",
+        confirmButtonColor: "#1a3c34"
+      });
     }
-  };
+  }
+};
 
   const deleteProduct = async () => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
+
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#1a3c34", 
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+    customClass: {
+      popup: 'my-swal-popup' 
+    }
+  }).then(async (result) => {
+
+    if (result.isConfirmed) {
       try {
         await axios.delete(`http://localhost:5000/products/${productId}`);
+        
+     
+        await Swal.fire({
+          title: "Deleted!",
+          text: "Product has been removed.",
+          icon: "success",
+          confirmButtonColor: "#1a3c34",
+        });
+
         navigate(`/${localStorage.getItem("storeId")}/allproducts`);
       } catch (err) {
         console.log(err);
+        Swal.fire("Error!", "Something went wrong while deleting.", "error");
       }
     }
-  };
-
+  });
+};
   return (
     <div className="product-view-container">
       <div className="edit-card">
