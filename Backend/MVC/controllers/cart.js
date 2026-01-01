@@ -113,9 +113,44 @@ const getCartWhereIsDeletedTure = (req, res) => {
       });
     });
 };
+const getCartWithProducts = (req, res) => {
+  const userId = req.token.user_id;
 
+  pool
+    .query(
+      `
+      SELECT
+        cart.id AS cart_id,
+        cart_products.id AS cart_product_id,
+        cart_products.quantity,
+        products.id AS product_id,
+        products.title,
+        products.price,
+        products.imgsrc
+      FROM cart
+      JOIN cart_products ON cart.id = cart_products.cart
+      JOIN products ON cart_products.product = products.id
+      WHERE cart.users_id = $1
+        AND cart.is_deleted = false
+      `,
+      [userId]
+    )
+    .then((result) => {
+      res.status(200).json({
+        success: true,
+        items: result.rows,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    });
+};
 module.exports = {
   addToCart,
   getCartWereIsDeletedFalse,
   getCartWhereIsDeletedTure,
+  getCartWithProducts
 };

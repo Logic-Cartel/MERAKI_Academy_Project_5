@@ -3,6 +3,7 @@ const {
   addToCart,
   getCartWereIsDeletedFalse,
   getCartWhereIsDeletedTure,
+  getCartWithProducts,
 } = require("../controllers/cart");
 const authentication = require("../middlewares/authentication");
 const cartRouter = express.Router();
@@ -17,9 +18,9 @@ cartRouter.get(
 cartRouter.get(
   "/getCartWhereIsDeletedTure",
   authentication,
-  getCartWhereIsDeletedTure
+  getCartWhereIsDeletedTure,
 );
-
+cartRouter.get("/with-products", authentication, getCartWithProducts);
 //========================
 
 module.exports = cartRouter;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const Cart = () => {
@@ -8,7 +8,7 @@ const Cart = () => {
     const token = localStorage.getItem("token");
 
     axios
-      .get("http://localhost:5000/cart", {
+      .get("http://localhost:5000/cart/with-products", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -23,16 +23,18 @@ const Cart = () => {
 
   return (
     <div>
-      <h2>🛒 Your Cart</h2>
+      <h2>Your Cart</h2>
 
       {items.length === 0 ? (
         <p>Cart is empty</p>
       ) : (
         items.map((item) => (
-          <div key={item.id}>
-            <img src={item.imgsrc} />
+          <div key={item.cart_product_id}>
+            <img src={item.imgsrc} alt={item.title} />
             <p>{item.title}</p>
-            <p>${item.price}</p>
+            <p>Price: {item.price}</p>
+            <p>Quantity  : {item.quantity}</p>
+            <hr />
           </div>
         ))
       )}
