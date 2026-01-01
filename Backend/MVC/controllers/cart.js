@@ -1,129 +1,116 @@
 const { pool } = require("../models/db");
 
-const addToCart = async (req, res) => {
+const addToCart = (req, res) => {
+  const { products_id, cart_id, quantity } = req.body;
   const userId = req.token.user_id;
-  const { products_id } = req.body;
 
-  try {
-    const check = await pool.query(
-      `
-      SELECT * FROM cart
-      WHERE users_id = $1 AND products_id = $2
-      `,
-      [userId, products_id]
-    );
+  if (!products_id || !cart_id || !quantity) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required information",
+    });
+  }
 
-    if (check.rows.length > 0) {
-      const updated = await pool.query(
-        `
-        UPDATE cart
-        SET is_deleted = false
-        WHERE users_id = $1 AND products_id = $2
-        RETURNING *
-        `,
-        [userId, products_id]
+  if (quantity < 1 || quantity > 99) {
+    return res.status(400).json({
+      success: false,
+      message: "Quantity must be between 1 and 99",
+    });
+  }
+
+  pool
+    .query(
+      `INSERT INTO cart_products (cart, product,
+      quantity)
+      VALUES ($1, $2,$3)
+      RETURNING *`,
+      [cart_id, products_id, quantity]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res.status(403).json({
+          success: false,
+          message: "This cart doesn't belong to you",
+        });
+      }
+
+      return pool.query(
+        `INSERT INTO cart_products (cart, product, quantity)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (cart, product) 
+         DO UPDATE SET quantity = cart_products.quantity + $3
+         RETURNING *`,
+        [cart_id, products_id, quantity]
       );
-
-      return res.status(200).json({
+    })
+    .then((result) => {
+      res.status(201).json({
         success: true,
-        message: "Product restored to cart",
-        item: updated.rows[0],
+        message: "Product added to cart",
+        item: result.rows[0],
       });
-    }
-
-    const inserted = await pool.query(
-      `
-      INSERT INTO cart (users_id, products_id)
-      VALUES ($1, $2)
-      RETURNING *
-      `,
-      [userId, products_id]
-    );
-
-    res.status(201).json({
-      success: true,
-      message: "Product added to cart",
-      item: inserted.rows[0],
+    })
+    .catch((err) => {
+      console.error("Error adding to cart:", err);
+      res.status(500).json({
+        success: false,
+        message: "Error adding product to cart",
+      });
     });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
-  }
 };
-const removeFromCart = async (req, res) => {
-  const userId = req.token.user_id;
-  const { productId } = req.params;
 
-  try {
-    const result = await pool.query(
-      `
-      UPDATE cart
-      SET is_deleted = true
-      WHERE users_id = $1 AND products_id = $2
-      RETURNING *
-      `,
-      [userId, productId]
-    );
+const getCartWereIsDeletedFalse = (req, res) => {
+  // const userId = req.token.user_id;
 
-    res.json({
-      success: true,
-      message: "Removed from cart",
-      item: result.rows[0],
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
-  }
-};
-const getCart = async (req, res) => {
+  // pool
+  //   .query(
+  //     `
+  //   SELECT
+  //     cart_products.id,
+  //     cart_products.quantity,
+  //     products.id AS product_id,
+  //     products.title,
+  //     products.price,
+  //     products.imgsrc,
+  //     cart.id AS cart_id
+  //   FROM cart
+  //   JOIN cart_products ON cart.id = cart_products.cart
+  //   JOIN products ON cart_products.product = products.id
+  //   WHERE cart.is_deleted = false
+  //     AND cart.users_id = $1
+  //   `,
+  //     [userId]
+  //   )
+  //   .then((result) => {
+  //     res.json({ success: true, items: result.rows });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).json({ success: false, error: err.message });
+  //   });
   const userId = req.token.user_id;
 
-  try {
-    const result = await pool.query(
+  pool
+    .query(
       `
-      SELECT c.*, p.title, p.price, p.imgsrc
-      FROM cart c
-      JOIN products p ON c.products_id = p.id
-      WHERE c.users_id = $1 AND c.is_deleted = true
+      SELECT *
+      FROM cart
+      WHERE is_deleted = false
+      AND users_id = $1
       `,
       [userId]
-    );
-
-    res.json({
-      success: true,
-      items: result.rows,
+    )
+    .then((result) => {
+      res.json({
+        success: true,
+        items: result.rows,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        error: err.message,
+      });
     });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
-  }
-};
-const getCartWhereIsDeletedTrue = async (req, res) => {
-  const userId = req.token.user_id;
-  try {
-    const result = await pool.query(
-      `
-      SELECT * FROM cart WHERE users_id =$1 AND is_deleted = true
-      `,
-      [userId]
-    );
-
-    res.json({
-      success: true,
-      items: result.rows,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
-  }
 };
 
 // const getStoreCart = async (req,res)=>{
@@ -132,7 +119,5 @@ const getCartWhereIsDeletedTrue = async (req, res) => {
 
 module.exports = {
   addToCart,
-  removeFromCart,
-  getCart,
-  getCartWhereIsDeletedTrue,
+  getCartWereIsDeletedFalse,
 };

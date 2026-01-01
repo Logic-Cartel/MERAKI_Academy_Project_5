@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 
 function Products() {
   const [products, setProducts] = useState([]);
-  const [showNav, setShowNav] = useState(true);
+  const token = localStorage.getItem("token");
+  console.log("TOKEN:", token);
   useEffect(() => {
     axios
       .get("http://localhost:5000/products/all")
@@ -14,7 +15,41 @@ function Products() {
       })
       .catch((err) => console.log(err));
   }, []);
-  
+
+  const addToCart = (productId) => {
+   
+    const token = localStorage.getItem("token");
+   
+
+    if (!token) {
+      alert("Please login first");
+      return;
+    }
+
+    axios
+      .post(
+        "http://localhost:5000/cart",
+        {
+          cart_id: localStorage.getItem("CartId"),
+          products_id: productId,
+          
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        alert("Product added to cart ✅");
+      })
+      .catch((err) => {
+        console.error(err.response?.data || err.message);
+        alert("Error adding product");
+      });
+  };
+
   return (
     <div className="container-main">
       <div className="header-section">
@@ -26,39 +61,33 @@ function Products() {
 
       <div className="products-grid">
         {products.map((item) => (
-          <Link
-            to={`/product/${item.id}`}
-            className="product-item"
-            key={item.id}
-          >
-            <div className="product-card">
-              <div className="image-wrapper">
-                <span className="product-badge">{item.badge || "New"}</span>
-                <img
-                  src={item.imgsrc}
-                  alt={item.title}
-                  className="product-img"
-                />
-              </div>
-
-              <div className="product-info">
-                <div className="color-options">
-                  <span className="dot dot-1"></span>
-                  <span className="dot dot-2"></span>
-                  <span className="dot dot-3"></span>
+          <div className="product-item" key={item.id}>
+            <Link to={`/product/${item.id}`}>
+              <div className="product-card">
+                <div className="image-wrapper">
+                  <span className="product-badge">{item.badge || "New"}</span>
+                  <img
+                    src={item.imgsrc}
+                    alt={item.title}
+                    className="product-img"
+                  />
                 </div>
 
                 <h3 className="product-name">{item.title}</h3>
-
-                <div className="product-footer">
-                  <span className="price">${item.price}</span>
-                  <button className="add-to-cart-btn">
-                    <span className="plus-icon">+</span> Cart
-                  </button>
-                </div>
               </div>
+            </Link>
+
+            <div className="product-footer">
+              <span className="price">${item.price}</span>
+
+              <button
+                className="add-to-cart-btn"
+                onClick={() => addToCart(item.id)}
+              >
+                <span className="plus-icon">+</span> Cart
+              </button>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

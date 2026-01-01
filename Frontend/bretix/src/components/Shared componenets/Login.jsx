@@ -6,9 +6,8 @@ import { useDispatch } from "react-redux";
 import { cleareRole, setRole } from "../../redux/roleSlice";
 import { useSelector } from "react-redux";
 
-
 function Login() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,14 +27,21 @@ function Login() {
 
     setError("");
 
-   
-    
-
     axios
       .post("http://localhost:5000/users/login", { email, password })
       .then((result) => {
-        dispatch(setRole(result.data.role))
+        axios
+          .get("http://localhost:5000/cart/isDeletedFalse", {
+            headers: {
+              Authorization: `Bearer ${result.data.token}`,
+            },
+          })
+          .then((res) => {
+            localStorage.setItem("CartId", res.data.items[0].id);
+          });
+        dispatch(setRole(result.data.role));
         localStorage.setItem("token", result.data.token);
+        localStorage.setItem("role", result.data.role);
         localStorage.setItem("role",result.data.role)
         localStorage.setItem("storeId", result.data.storeId)
         localStorage.setItem("storeTitle", result.data.storeTitle)
@@ -47,9 +53,9 @@ function Login() {
       });
   };
 
-    const roleState = useSelector((state)=>{
-      return state.role.role
-    })
+  const roleState = useSelector((state) => {
+    return state.role.role;
+  });
 
   return (
     <div className="login-page">
@@ -76,12 +82,15 @@ function Login() {
 
           <button onClick={loginNow}>Login</button>
         </div>
-        
-        <div style={{marginTop: "20px", fontSize: "14px", color: "#666"}}>
-          Don't have an account? <span 
-            onClick={() => navigate("/register")} 
-            style={{color: "#2d6a4f", cursor: "pointer", fontWeight: "bold"}}
-          >Register here</span>
+
+        <div style={{ marginTop: "20px", fontSize: "14px", color: "#666" }}>
+          Don't have an account?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            style={{ color: "#2d6a4f", cursor: "pointer", fontWeight: "bold" }}
+          >
+            Register here
+          </span>
         </div>
       </div>
     </div>
