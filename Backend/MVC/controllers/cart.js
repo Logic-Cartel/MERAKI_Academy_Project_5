@@ -1,34 +1,24 @@
 const { pool } = require("../models/db");
 
-const updateCart = (req, res) => {
-  const { id } = req.params;
-  const userId = req.token.user_id;
+const addToCart = (req, res) => {
+  const { products_id, cart_id, quantity } = req.body;
+    console.log("BODY:", req.body);
 
   pool
     .query(
       `
-      UPDATE cart
-      SET is_deleted = true
-      WHERE id = $1
+      INSERT INTO cart_products (cart, product,
+      quantity)
+      VALUES ($1, $2,$3)
       RETURNING *
       `,
-      [id]
+      [cart_id, products_id, quantity]
     )
-    .then(() => {
-      return pool.query(
-        `
-        INSERT INTO cart (users_id)
-        VALUES ($1)
-        RETURNING *
-        `,
-        [userId]
-      );
-    })
     .then((result) => {
-      res.json({
+      res.status(201).json({
         success: true,
-        message: "cart updated and new cart row inserted",
-        items: result.rows,
+        message: "Product added to cart",
+        item: result.rows[0],
       });
     })
     .catch((err) => {
@@ -39,7 +29,7 @@ const updateCart = (req, res) => {
     });
 };
 
-const getDeletedCart = (req, res) => {
+const getCartWereIsDeletedFalse = (req, res) => {
   const userId = req.token.user_id;
 
   pool
@@ -47,7 +37,7 @@ const getDeletedCart = (req, res) => {
       `
       SELECT *
       FROM cart
-      WHERE is_deleted = true
+      WHERE is_deleted = false
       AND users_id = $1
       `,
       [userId]
@@ -67,6 +57,6 @@ const getDeletedCart = (req, res) => {
 };
 
 module.exports = {
-  updateCart,
-  getDeletedCart,
+  addToCart,
+  getCartWereIsDeletedFalse,
 };

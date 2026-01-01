@@ -40,7 +40,7 @@ const register = (req, res) => {
           date_of_birthday,
           email,
           hashedPassword,
-          role_id
+          role_id,
         ]
       );
     })
@@ -76,34 +76,55 @@ const register = (req, res) => {
 //================login================
 const login = (req, res) => {
   const { email, password } = req.body;
-  pool
-    .query(`SELECT * FROM users WHERE email=$1`, [email])
-    .then((result) => {
-      if (result.rows.length === 0) {
-        res.status(403).json({
+  pool.query(`SELECT * FROM users WHERE email=$1`, [email]).then((result) => {
+    if (result.rows.length === 0) {
+      res.status(403).json({
+        success: false,
+        massage:
+          "The email doesn’t exist or the password you’ve entered is incorrect",
+      });
+    }
+    const user = result.rows[0];
+    bcrypt.compare(password, user.password).then((ismatch) => {
+      if (!ismatch) {
+        return res.status(403).json({
           success: false,
           massage:
             "The email doesn’t exist or the password you’ve entered is incorrect",
         });
       }
-      const user = result.rows[0];
-      bcrypt.compare(password, user.password).then((ismatch) => {
-        if (!ismatch) {
-          return res.status(403).json({
-            success: false,
-            massage:
-              "The email doesn’t exist or the password you’ve entered is incorrect",
+      const payload = {
+        user_id: user.id,
+        user_first: user.firstName,
+        country: user.country,
+        role: user.role_id,
+      };
+      const token = jwt.sign(payload, process.env.SECRET, {
+        expiresIn: "2h",
+      });
+
+      if (user.role_id === 2) {
+        pool
+          .query(`SELECT * FROM store WHERE owner_id = $1`, [user.id])
+          .then((response) => {
+            res.status(200).json({
+              success: true,
+              massage: "Valid login credentials",
+              token: token,
+              userId: user.id,
+              role: user.role_id,
+              storeId: response.rows[0].id,
+              storeTitle:response.rows[0].title
+            });
+          })
+          .catch((err) => {
+            res.status(500).json({
+              success: false,
+              massage: "Server Error",
+              err: err.message,
+            });
           });
-        }
-        const payload = {
-          user_id: user.id,
-          user_first: user.firstName,
-          country: user.country,
-          role: user.role_id,
-        };
-        const token = jwt.sign(payload, process.env.SECRET, {
-          expiresIn: "2h",
-        });
+      } else {
         res.status(200).json({
           success: true,
           massage: "Valid login credentials",
@@ -111,15 +132,9 @@ const login = (req, res) => {
           userId: user.id,
           role: user.role_id,
         });
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        massage: "Server Error",
-        err: err.message,
-      });
+      }
     });
+  });
 };
 //====================getall User============
 const getAllUser = (req, res) => {

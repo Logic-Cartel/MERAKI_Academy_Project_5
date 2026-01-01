@@ -1,64 +1,78 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
-import { useSelector } from "react-redux";
+import { FaUser, FaUserPlus, FaSignOutAlt } from "react-icons/fa";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const role = localStorage.getItem("role") || null;
+  const role = localStorage.getItem("role");
 
   return (
     <nav className="navbar-container">
       <div className="nav-group left">
-        <button className="nav-btn" onClick={() => navigate("/")}>
-          Home
-        </button>
+        <div className="nav-logo" onClick={() => navigate("/")}>
+          Bretix
+        </div>
+      </div>
+
+      <div className="nav-group center">
         <button className="nav-btn" onClick={() => navigate("/products")}>
           Products
         </button>
-        <button
-          className="nav-btn"
-          onClick={() => {
-            navigate("/stores");
-          }}
-        >
+        <button className="nav-btn" onClick={() => navigate("/stores")}>
           Stores
+        </button>
+        <button className="nav-btn" onClick={() => navigate("/contact")}>
+          Contact Us
         </button>
       </div>
 
-      <div className="nav-logo" onClick={() => navigate("/")}>
-        Bretix
-      </div>
-
       <div className="nav-group right">
-        <button className="nav-btn">Contact Us</button>
-        <div className="auth-group">
-          <div className="shoppingCart">
-            <button onClick={() => navigate("/cart")}>🛒 </button>
-          </div>
-          {role === null && (
-            <button className="nav-btn" onClick={() => navigate("/Login")}>
-              Login
-            </button>
-          )}
-          {role === null && (
+        <button className="nav-btn" onClick={() => navigate("/cart")}>
+          🛒
+        </button>
+
+        {role === "2" && (
+          <button
+            className="nav-btn"
+            onClick={() => navigate("/stores/StoreManagement")}
+          >
+            Store Management
+          </button>
+        )}
+
+        {role === null && (
+          <>
             <button
-              className="register-btn"
+              className="icon-btn"
+              onClick={() => navigate("/Login")}
+              title="Login"
+            >
+              <FaUser size={18} />
+            </button>
+
+            <button
+              className="icon-btn register"
               onClick={() => navigate("/register")}
+              title="Register"
             >
-              Register
+              <FaUserPlus size={18} />
             </button>
-          )}
-          {role !== null && (
-            <button
-              onClick={() => {
-                localStorage.clear(), navigate("/");
-              }}
-            >
-              Logout
-            </button>
-          )}
-        </div>
+          </>
+        )}
+
+        {role !== null && (
+          <button
+            className="icon-btn logout"
+            title="Logout"
+            onClick={() => {
+              localStorage.clear();
+              navigate("/");
+            }}
+          >
+            <FaSignOutAlt size={18} />
+          </button>
+        )}
       </div>
     </nav>
   );
