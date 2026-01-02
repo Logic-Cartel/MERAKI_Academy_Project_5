@@ -45,7 +45,7 @@ const Cart = () => {
             <p>{item.title}</p>
             <p>Price: {item.price}</p>
             <p>Quantity : {item.quantity}</p>
-            <button onClick={() => removeFromCart(item.cartProductId)}>Remove</button>
+            <button onClick={() => removeFromCart(item.cart_product_id)}>Remove</button>
           </div>
         ))
       )}
