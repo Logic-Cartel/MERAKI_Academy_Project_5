@@ -1,8 +1,8 @@
-/* الإعدادات العامة للملف */
+
 .orders-page {
     background-color: #fcfcfc;
     min-height: 100vh;
-    padding: 60px 20px;
+    padding: 130px 130px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
 }
@@ -12,7 +12,7 @@
     margin: 0 auto;
 }
 
-/* الهيدر */
+
 .orders-header {
     text-align: center;
     margin-bottom: 50px;
@@ -31,14 +31,14 @@
     font-style: italic;
 }
 
-/* تصميم الجريد الرئيسي */
+
 .orders-grid-container {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-/* عناوين الأعمدة (تظهر فقط في الشاشات الواسعة) */
+
 .grid-header {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -50,10 +50,10 @@
     border-bottom: 1px solid #eee;
 }
 
-/* بطاقة الطلب بنظام الجريد */
+
 .order-item-card {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr; /* تقسيم 4 أعمدة */
+    grid-template-columns: 2fr 1fr 1fr 1fr;
     align-items: center;
     background-color: #fff;
     padding: 20px 25px;
@@ -62,11 +62,11 @@
 }
 
 .order-item-card:hover {
-    border-color: #2d5a27; /* اللون الأخضر الإيكو عند التحويم */
+    border-color: #2d5a27; 
     transform: translateY(-3px);
 }
 
-/* عمود المنتج */
+
 .product-column {
     display: flex;
     align-items: center;
@@ -98,7 +98,7 @@
     color: #999;
 }
 
-/* عمود الحالة */
+
 .status-tag {
     background-color: #f1f8f1;
     color: #2d5a27;
@@ -110,14 +110,13 @@
     border-radius: 50px;
 }
 
-/* عمود السعر */
 .price-value {
     font-weight: 600;
     font-size: 1.1rem;
     color: #1a1a1a;
 }
 
-/* حالة التحميل */
+
 .loader-container {
     display: flex;
     justify-content: center;
@@ -128,14 +127,14 @@
     letter-spacing: 2px;
 }
 
-/* التجاوب مع الموبايل */
+
 @media (max-width: 768px) {
     .grid-header {
-        display: none; /* إخفاء الهيدر في الموبايل */
+        display: none; 
     }
 
     .order-item-card {
-        grid-template-columns: 1fr; /* تحويل الجريد لعمود واحد */
+        grid-template-columns: 1fr; 
         gap: 15px;
         text-align: center;
     }
