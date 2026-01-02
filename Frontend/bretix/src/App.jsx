@@ -26,6 +26,7 @@ import Orders from "./components/Shared componenets/Orders";
 import StoreInfo from "./components/Owners/StoreInfo";
 import Dashboard from "./components/Owners/Dashboard";
 import ContactUs from "./components/Shared componenets/ContactUs";
+import AdminDashboard from "./components/admin/AdminDashboard";
 
 function App() {
   const [showNav, setShowNav] = useState(true);
@@ -65,6 +66,8 @@ function App() {
         <Route path="/managerdashboard" element={<Dashboard/>}/>
         <Route path="/Orders" element={<Orders />} />
               <Route path="/ContactUs" element={<ContactUs />} />
+         <Route path="/AdminDashboard" element={<AdminDashboard />} />
+
       </Routes>
       <Footer />
     </div>

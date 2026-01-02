@@ -28,6 +28,9 @@ const Navbar = () => {
         <button className="nav-btn" onClick={() => navigate("/ContactUs")}>
           Contact Us
         </button>
+         <button className="nav-btn" onClick={() => navigate("/AdminDashboard")}>
+          AdminDashboard
+        </button>
       </div>
 
       <div className="nav-group right">
