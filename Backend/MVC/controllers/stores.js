@@ -100,59 +100,117 @@ const deleteStoreById = async (req, res) => {
   }
 };
 
-const getAllStores = async(req,res)=>{
+const getAllStores = async (req, res) => {
   try {
-    const result = await pool.query(`SELECT * FROM store`)
+    const result = await pool.query(`SELECT * FROM store`);
     res.status(200).json({
-      success:true,
-      result:result.rows
-    })
-  }catch(err){
+      success: true,
+      result: result.rows,
+    });
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
-const getProductsInStore = async(req,res)=>{
-  const {id} = req.params
-  try{
-    const result = await pool.query(`
+const getProductsInStore = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `
        SELECT products.id,products.imgsrc,products.title,products.rate
         FROM products
        FULL OUTER JOIN store 
-       ON products.store_id = store.id WHERE store.id =$1 `,[id])
-       res.status(200).json({
-        success:true,
-        result:result.rows
-       })
-  }catch(err){
+       ON products.store_id = store.id WHERE store.id =$1 `,
+      [id]
+    );
+    res.status(200).json({
+      success: true,
+      result: result.rows,
+    });
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
-const addNewProductInStore = async(req,res)=>{
-    const { imgsrc, title, description, price, rate, categories_id,store_id } = req.body;
+const addNewProductInStore = async (req, res) => {
+  const { imgsrc, title, description, price, rate, categories_id, store_id } =
+    req.body;
 
-  try{
-    const result = await pool.query(`
+  try {
+    const result = await pool.query(
+      `
       INSERT INTO products (imgsrc, title, description, price, rate, categories_id,store_id)
     VALUES ($1, $2, $3, $4, $5, $6,$7)
     RETURNING *
       `,
-    [imgsrc, title, description, price, rate, categories_id,store_id]
-    )
+      [imgsrc, title, description, price, rate, categories_id, store_id]
+    );
     res.status(201).json({
-      success:true,
-      result:result.rows
-    })
-
-  }catch(err){
+      success: true,
+      result: result.rows,
+    });
+  } catch (err) {
     res.status(500).json({
-      success:false,
-      message:"server error",
-      message:err.message
-    })
+      success: false,
+      message: "server error",
+      message: err.message,
+    });
   }
-}
+};
+
+const getAllDoneOrdersForStoreById = async (req, res) => {
+  const {id} = req.params
+  try {
+    const result = await pool.query(`
+      SELECT * FROM cart_products
+      INNER JOIN cart on cart_products.cart = cart.id
+      INNER JOIN products on cart_products.product = products.id
+      WHERE products.store_id = $1           
+      `,[id]);
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getStoreStatistic = async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const stats = await pool.query(`
+      SELECT 
+        COUNT(DISTINCT cart.id) as total_orders,
+        SUM(cart_products.quantity * products.price) as total_sales
+      FROM cart_products
+      JOIN cart ON cart_products.cart = cart.id
+      JOIN products ON cart_products.product = products.id
+      WHERE products.store_id = $1 
+        AND cart.done_at IS NOT NULL
+    `, [id]);
+    
+    const products = await pool.query(`
+      SELECT COUNT(*) as total_products
+      FROM products 
+      WHERE store_id = $1
+    `, [id]);
+    
+    const totalSales = parseInt(stats.rows[0].total_sales) || 0;
+    const totalOrders = parseInt(stats.rows[0].total_orders) || 0;
+    const avgPerOrder = totalOrders > 0 ? totalSales / totalOrders : 0;
+    
+    res.json({
+      success: true,
+      totalSales: totalSales,
+      total_orders: totalOrders,
+      total_products: parseInt(products.rows[0].total_products) || 0,
+      avg_per_order: Math.round(avgPerOrder)
+    });
+    
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false });
+  }
+};
 
 module.exports = {
   addNewStore,
@@ -162,4 +220,6 @@ module.exports = {
   getAllStores,
   getProductsInStore,
   addNewProductInStore,
+  getAllDoneOrdersForStoreById,
+  getStoreStatistic
 };

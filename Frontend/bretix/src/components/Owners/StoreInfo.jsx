@@ -5,15 +5,16 @@ import Swal from "sweetalert2";
 import "./StoreInfo.css";
 
 const StoreInfo = () => {
-  const { id } = useParams();
+  const { storeId } = useParams();
   const [storeInfo, setStoreInfo] = useState({});
   const [storeInfoEdition, setStoreInfoEdition] = useState({});
+  
 
   useEffect(() => {
     const getStoreInfo = async () => {
       try {
-        const result = await axios.get(`http://localhost:5000/stores/${id}`);
-        const data = result.data.result[0];
+        const result = await axios.get(`http://localhost:5000/stores/${storeId}`);
+        const data = result.data.result[0];        
         setStoreInfo(data);
         setStoreInfoEdition(data);
       } catch (err) {
@@ -21,7 +22,7 @@ const StoreInfo = () => {
       }
     };
     getStoreInfo();
-  }, [id]);
+  }, [storeId]);
 
   const handleUpdate = async () => {
     const result = await Swal.fire({

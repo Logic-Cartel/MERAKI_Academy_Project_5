@@ -7,6 +7,8 @@ const {
   getAllStores,
   getProductsInStore,
   addNewProductInStore,
+  getAllDoneOrdersForStoreById,
+  getStoreStatistic,
 } = require("../controllers/stores");
 const storesRouter = express.Router();
 
@@ -19,6 +21,8 @@ storesRouter.post("/addnewproductinstore", addNewProductInStore)
 storesRouter.get("/:id", getStoreById);
 storesRouter.put("/:id/update", updateStoreById);
 storesRouter.delete("/:id", deleteStoreById);
+storesRouter.get("/gettotalsales/:id", getAllDoneOrdersForStoreById)
+storesRouter.get('/:id/statistic', getStoreStatistic);
 //===============
 
 module.exports = storesRouter;
