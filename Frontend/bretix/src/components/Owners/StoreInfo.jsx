@@ -1,10 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import "./StoreInfo.css";
 
+
 const StoreInfo = () => {
+  const navigate = useNavigate()
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -21,10 +23,15 @@ const StoreInfo = () => {
   const [storeInfoEdition, setStoreInfoEdition] = useState({});
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
     const getStoreInfo = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:5000/stores/${storeId}`
+          `http://localhost:5000/stores/${storeId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
         const data = result.data.result[0];
         setStoreInfo(data);
@@ -37,6 +44,8 @@ const StoreInfo = () => {
   }, [storeId]);
 
   const handleUpdate = async () => {
+    const token = localStorage.getItem("token");
+
     const result = await Swal.fire({
       title: "Save Changes?",
       text: "Are you sure you want to update store information?",
@@ -58,7 +67,13 @@ const StoreInfo = () => {
       });
 
       try {
-        await axios.put(`http://localhost:5000/stores/${id}`, storeInfoEdition);
+        await axios.put(
+          `http://localhost:5000/stores/${storeId}/update`,
+          storeInfoEdition,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setStoreInfo(storeInfoEdition);
         Swal.fire({
           title: "Updated!",
@@ -141,7 +156,7 @@ const StoreInfo = () => {
                 Confirm Edition
               </button>
             )}
-            <button className="cancel-btn" onClick={handleCancel}>
+            <button className="cancel-btn" onClick={()=>{navigate(-1)}}>
               Cancel
             </button>
           </div>

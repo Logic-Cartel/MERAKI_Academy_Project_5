@@ -13,24 +13,60 @@ const {
   getOrders,
   getOrderDetails,
 } = require("../controllers/stores");
+
+const authentication = require("../middlewares/authentication");
+const authorization = require("../middlewares/authorization");
+
 const storesRouter = express.Router();
 
-//===============
-
+//====================================================================================
 storesRouter.get("/all", getAllStores);
-storesRouter.post("/addnewstore", addNewStore);
-storesRouter.post("/addnewproductinstore", addNewProductInStore);
-storesRouter.get('/order-details/:order_id', getOrderDetails);
-
-
-storesRouter.get("/:id/productsinstore", getProductsInStore);
-storesRouter.get("/:id/statistic", getStoreStatistic);
-storesRouter.get("/:id/last-seven-days-chart", getRevenueChart);
-storesRouter.get("/:id/orders", getOrders);
-storesRouter.get("/:id/total-sales", getAllDoneOrdersForStoreById);
 storesRouter.get("/:id", getStoreById);
-storesRouter.put("/:id/update", updateStoreById);
-storesRouter.delete("/:id", deleteStoreById);
-//===============
+
+//====================================================================================
+storesRouter.post("/addnewstore", authentication, addNewStore);
+storesRouter.get("/order-details/:order_id", authentication, getOrderDetails);
+
+//====================================================================================
+storesRouter.post(
+  "/addnewproductinstore",
+  authentication,
+  authorization(2),
+  addNewProductInStore
+);
+storesRouter.get(
+  "/:id/productsinstore",
+  authentication,
+  authorization(2),
+  getProductsInStore
+);
+storesRouter.get(
+  "/:id/statistic",
+  authentication,
+  authorization(2),
+  getStoreStatistic
+);
+storesRouter.get(
+  "/:id/last-seven-days-chart",
+  authentication,
+  authorization(2),
+  getRevenueChart
+);
+storesRouter.get("/:id/orders", authentication, authorization(2), getOrders);
+storesRouter.get(
+  "/:id/total-sales",
+  authentication,
+  authorization(2),
+  getAllDoneOrdersForStoreById
+);
+storesRouter.put(
+  "/:id/update",
+  authentication,
+  authorization(2),
+  updateStoreById
+);
+storesRouter.delete("/:id", authentication, authorization(2), deleteStoreById);
+
+//====================================================================================
 
 module.exports = storesRouter;

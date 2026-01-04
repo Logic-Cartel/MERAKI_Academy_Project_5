@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const OrderDetails = () => {
-  const { order_id } = useParams();
-  const [order, setOrder] = useState(null);
-  const [items, setItems] = useState([]);
-  const [total, setTotal] = useState(0);
-
+  const navigate = useNavigate()
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -19,9 +15,18 @@ const OrderDetails = () => {
     }
   }, []);
 
+  const { order_id } = useParams();
+  const [order, setOrder] = useState(null);
+  const [items, setItems] = useState([]);
+  const [total, setTotal] = useState(0);
+
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
     axios
-      .get(`http://localhost:5000/stores/order-details/${order_id}`)
+      .get(`http://localhost:5000/stores/order-details/${order_id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => {
         setOrder(res.data.order);
         setItems(res.data.items);

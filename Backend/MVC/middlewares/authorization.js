@@ -1,11 +1,15 @@
-const authorization = (text) => {
+const authorization = (requiredRole) => {
   return (req, res, next) => {
-    const permission = req.token.permissions;
-    if (!permission.includes(text)) {
-      res.status(401).json("Unauthorized to do that");
-    } else {
-      next();
+    const userRole = req.token.role;
+
+    if (userRole !== requiredRole) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to do that",
+      });
     }
+
+    next();
   };
 };
 

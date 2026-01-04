@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./storeOwner.css";
 const OwnerStoreManagement = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -14,7 +16,6 @@ const OwnerStoreManagement = () => {
     }
   }, []);
 
-  const navigate = useNavigate();
   const [storeId, setStoreId] = useState(localStorage.getItem("storeId"));
   const [storeTitle, setStoreTitle] = useState(
     localStorage.getItem("storeTitle")
