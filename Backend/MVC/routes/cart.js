@@ -4,7 +4,6 @@ const {
   getCartWereIsDeletedFalse,
   getCartWhereIsDeletedTure,
   getCartWithProducts,
-  removeFromCart,
   updatedQuantity,
 } = require("../controllers/cart");
 const authentication = require("../middlewares/authentication");
@@ -23,7 +22,6 @@ cartRouter.get(
   getCartWhereIsDeletedTure
 );
 cartRouter.get("/with-products", authentication, getCartWithProducts);
-cartRouter.delete("/:id", authentication, removeFromCart);
 cartRouter.patch("/:cartProductId", authentication, updatedQuantity);
 //========================
 

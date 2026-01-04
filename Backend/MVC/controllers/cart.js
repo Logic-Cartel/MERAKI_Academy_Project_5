@@ -11,38 +11,15 @@ const addToCart = (req, res) => {
     });
   }
 
-  if (quantity < 1 || quantity > 99) {
-    return res.status(400).json({
-      success: false,
-      message: "Quantity must be between 1 and 99",
-    });
-  }
-
   pool
     .query(
-      `INSERT INTO cart_products (cart, product,
-      quantity)
-      VALUES ($1, $2,$3)
-      RETURNING *`,
+      `INSERT INTO cart_products (cart, product, quantity)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (cart, product)
+       DO UPDATE SET quantity = cart_products.quantity + EXCLUDED.quantity
+       RETURNING *`,
       [cart_id, products_id, quantity]
     )
-    .then((result) => {
-      if (result.rows.length === 0) {
-        return res.status(403).json({
-          success: false,
-          message: "This cart doesn't belong to you",
-        });
-      }
-
-      return pool.query(
-        `INSERT INTO cart_products (cart, product, quantity)
-         VALUES ($1, $2, $3)
-         ON CONFLICT (cart, product) 
-         DO UPDATE SET quantity = cart_products.quantity + $3
-         RETURNING *`,
-        [cart_id, products_id, quantity]
-      );
-    })
     .then((result) => {
       res.status(201).json({
         success: true,
@@ -51,7 +28,7 @@ const addToCart = (req, res) => {
       });
     })
     .catch((err) => {
-      console.error("Error adding to cart:", err);
+      console.error(err);
       res.status(500).json({
         success: false,
         message: "Error adding product to cart",
@@ -147,34 +124,40 @@ const getCartWithProducts = (req, res) => {
       });
     });
 };
-const removeFromCart = (req, res) => {
-  const cartProductId = req.params.id;
-  const userId = req.token.user_id;
 
-  pool
-    .query(
-      `DELETE FROM cart_products 
-       WHERE id = $1 
-       AND cart IN (SELECT id FROM cart WHERE users_id = $2)`,
-      [cartProductId, userId]
-    )
-    .then(() => {
-      res.json({ success: true, message: "Product removed from cart" });
-    })
-    .catch((err) => {
-      res.status(500).json({ success: false, error: err.message });
-    });
-};
 const updatedQuantity = (req, res) => {
   const cartProductId = req.params.cartProductId;
   const { quantity } = req.body;
   const userId = req.token.user_id;
 
-  if (!quantity || quantity < 1) {
-    return res.status(400).json({
-      success: false,
-      message: "Quantity must be at least 1",
-    });
+  if (quantity === 0) {
+    const deleteQuery = `
+      DELETE FROM cart_products
+      USING cart
+      WHERE cart_products.id = $1
+        AND cart_products.cart = cart.id
+        AND cart.users_id = $2
+      RETURNING *;
+    `;
+
+    return pool
+      .query(deleteQuery, [cartProductId, userId])
+      .then((result) => {
+        if (result.rows.length === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "Item not found",
+          });
+        }
+
+        res.json({
+          success: true,
+          message: "Product removed from cart",
+        });
+      })
+      .catch(() => {
+        res.status(500).json({ success: false });
+      });
   }
 
   const query = `
@@ -198,7 +181,7 @@ const updatedQuantity = (req, res) => {
       }
 
       res.json({
-        success: true,
+        success:  true,
         message: "Quantity updated",
         item: result.rows[0],
       });
@@ -216,6 +199,5 @@ module.exports = {
   getCartWereIsDeletedFalse,
   getCartWhereIsDeletedTure,
   getCartWithProducts,
-  removeFromCart,
   updatedQuantity,
 };
