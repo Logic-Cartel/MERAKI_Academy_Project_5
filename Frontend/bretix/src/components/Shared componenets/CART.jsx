@@ -18,22 +18,7 @@ const Cart = () => {
         console.log(err);
       });
   }, []);
-  const removeFromCart = (cartProductId) => {
-    axios
-      .delete(`http://localhost:5000/cart/${cartProductId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        console.log(res.data.message);
 
-        setItems(
-          items.filter((item) => item.cart_product_id !== cartProductId)
-        );
-      })
-      .catch((err) => {
-        console.error(err.response?.data || err.message);
-      });
-  };
   const updateQuantity = (cartProductId, newQuantity) => {
     const token = localStorage.getItem("token");
 
@@ -58,8 +43,8 @@ const Cart = () => {
       });
   };
   const total = items.reduce((sum, item) => {
-  return sum + item.price * item.quantity;
-}, 0);
+    return sum + item.price * item.quantity;
+  }, 0);
 
   return (
     <div>
@@ -75,9 +60,6 @@ const Cart = () => {
             <p>Price: {item.price}</p>
             <h3>Total: ${total}</h3>
             <p>Quantity : {item.quantity}</p>
-            <button onClick={() => removeFromCart(item.cart_product_id)}>
-              Remove
-            </button>
             <button
               onClick={() =>
                 updateQuantity(item.cart_product_id, item.quantity - 1)
