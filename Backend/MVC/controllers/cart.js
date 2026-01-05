@@ -38,6 +38,7 @@ const addToCart = (req, res) => {
 
 const getCartWereIsDeletedFalse = (req, res) => {
   const userId = req.token.user_id;
+  console.log(req.token.user_id);
 
   pool
     .query(
@@ -197,27 +198,37 @@ const updatedQuantity = (req, res) => {
 
 const checkoutPayment = async (req, res) => {
   const { cartId } = req.params;
+  const userId = req.token.user_id;
   try {
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       UPDATE cart
       SET is_deleted = true,
           done_at = CURRENT_TIMESTAMP
       WHERE id = $1
       RETURNING *;
-    `, [cartId]);
+    `,
+      [cartId]
+    );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Cart not found' });
+      return res.status(404).json({ message: "Cart not found" });
     }
+    pool
+      .query(`INSERT INTO  cart (users_id) VALUES ($1) RETURNING *`, [userId])
+      .then((cartresult) => {
+        res.json({
+          success: true,
+          message: "Payment completed successfully",
+        });
+      })
 
-    res.json({ 
-      success: true, 
-      message: 'Payment completed successfully'
-    });
-    
+      .catch((err) => {
+        console.log(err);
+      });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 };
 module.exports = {
