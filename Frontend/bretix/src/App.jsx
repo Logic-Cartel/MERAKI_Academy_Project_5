@@ -30,10 +30,10 @@ import Dashboard from "./components/Owners/Dashboard";
 import ContactUs from "./components/Shared componenets/ContactUs";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import OrderDetails from "./components/Owners/OrderDetails";
-import CheckoutPage from "./components/User/CheckoutPage";
-import SuccessPage from "./components/User/SuccessPage";
-
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+/* import CheckoutPage from "./components/User/CheckoutPage";  */
+/* import SuccessPage from "./components/User/SuccessPage"; 
+ */
+/* const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);  */
 
 function App() {
   const [showNav, setShowNav] = useState(true);
@@ -46,7 +46,7 @@ function App() {
     }
   }, [location.pathname]);
   return (
-  <Elements stripe={stripePromise}>
+ /*  <Elements stripe={stripePromise}>   */
     <div>
       <Navbar />
       <Routes>
@@ -81,13 +81,13 @@ function App() {
           <Route path="/ContactUs" element={<ContactUs />} />
           <Route path="/AdminDashboard" element={<AdminDashboard />} />
 
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/success" element={<SuccessPage />} />
-   
+         {/*  <Route path="/checkout" element={<CheckoutPage />} /> */}
+         {/*  <Route path="/success" element={<SuccessPage />} />
+    */}
       </Routes>
       <Footer />
     </div>
-   </Elements>
+  /*  </Elements>  */
   );
 }
 
