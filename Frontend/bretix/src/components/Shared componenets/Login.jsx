@@ -59,22 +59,7 @@ function Login() {
   const roleState = useSelector((state) => {
     return state.role.role;
   });
-const forgotPassword = () => {
-  if (!email) {
-    setError("Please enter your email first");
-    return;
-  }
 
-  axios
-    .post("http://localhost:5000/users/forgot-password", { email })
-    .then((res) => {
-      setError("");
-      setMessage(res.data.message);
-    })
-    .catch((err) => {
-      setError(err.response?.data?.message || "Something went wrong");
-    });
-};
   return (
     <div className="login-page">
       <div className="login-card">
@@ -109,8 +94,8 @@ const forgotPassword = () => {
           >
             Register here
           </span>
-          <p
-  onClick={forgotPassword}
+   <p
+  onClick={() => navigate("/forget-password")}
   style={{
     marginTop: "10px",
     cursor: "pointer",
