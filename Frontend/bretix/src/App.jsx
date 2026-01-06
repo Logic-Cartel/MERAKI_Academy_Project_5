@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import {
   Route,
   Routes,
@@ -32,8 +32,12 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import OrderDetails from "./components/Owners/OrderDetails";
 import CheckoutPage from "./components/User/CheckoutPage";
 import SuccessPage from "./components/User/SuccessPage";
+import ForgetPassword from "./components/Shared componenets/forgetPassword";
+import ResetPassword from "./components/Shared componenets/ResetPassword";
 
-const stripePromise = loadStripe(`pk_test_51SmBxL0V4wgzFf3V5fa3mpFRF4e093p5Adj005VP1nzpJFmiTruWpjNkaG3BcZFtM0e9cO1Bxn6q1ZoLW0dtaCcd00kwkx3bGI`);
+const stripePromise = loadStripe(
+  `pk_test_51SmBxL0V4wgzFf3V5fa3mpFRF4e093p5Adj005VP1nzpJFmiTruWpjNkaG3BcZFtM0e9cO1Bxn6q1ZoLW0dtaCcd00kwkx3bGI`
+);
 
 function App() {
   const [showNav, setShowNav] = useState(true);
@@ -46,11 +50,10 @@ function App() {
     }
   }, [location.pathname]);
   return (
-   <Elements stripe={stripePromise}> 
-    <div>
-      <Navbar />
-      <Routes>
-      
+    <Elements stripe={stripePromise}>
+      <div>
+        <Navbar />
+        <Routes>
           <Route
             path="/"
             element={
@@ -80,14 +83,15 @@ function App() {
           <Route path="/Orders" element={<Orders />} />
           <Route path="/ContactUs" element={<ContactUs />} />
           <Route path="/AdminDashboard" element={<AdminDashboard />} />
-
+          <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-         <Route path="/success" element={<SuccessPage />} />
-      </Routes>
-      <Footer />
-    </div>
-   </Elements>  
+          <Route path="/success" element={<SuccessPage />} />
+        </Routes>
+        <Footer />
+      </div>
+    </Elements>
   );
 }
-
+//AIzaSyDOlbYHkwC0-qcwR4ny_SlUXphJmF3h6hE
 export default App;
