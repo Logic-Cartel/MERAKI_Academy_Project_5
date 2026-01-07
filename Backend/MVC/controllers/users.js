@@ -236,6 +236,72 @@ const resetPassword = (req, res) => {
     });
   }
 };
+//=============profileusers===========
+const getMyProfile = (req, res) => {
+  const userId = req.user.id;
+  pool
+    .query(
+      `SELECT 
+        id,
+        firstname,
+        lastname,
+        age,
+        country,
+        phonenumber,
+        date_of_birthday,
+        email
+       FROM users
+       WHERE id = $1`,
+      [userId]
+    )
+    .then((result) => {
+      res.status(200).json({
+        success: true,
+        user: result.rows[0],
+      });
+    })
+    .catch(() => {
+      res.status(500).json({
+        success: false,
+        message: "Server error",
+      });
+    });
+};
+
+//================updateProfileUsers=========
+const updateMyProfile = (req, res) => {
+  const userId = req.user.id;
+  const { firstname, lastname, age, country, phonenumber, date_of_birthday } =
+    req.body;
+
+  pool
+    .query(
+      `UPDATE users SET
+        firstname=$1,
+        lastname=$2,
+        age=$3,
+        country=$4,
+        phonenumber=$5,
+        date_of_birthday=$6
+       WHERE id=$7
+       RETURNING id, firstname, lastname, age, country, phonenumber, date_of_birthday, email`,
+      [firstname, lastname, age, country, phonenumber, date_of_birthday, userId]
+    )
+    .then((result) => {
+      res.status(200).json({
+        success: true,
+        message: "Profile updated successfully",
+        user: result.rows[0],
+      });
+    })
+    .catch(() => {
+      res.status(500).json({
+        success: false,
+        message: "Server error",
+      });
+    });
+};
+
 //====================getall User============
 const getAllUser = (req, res) => {
   pool
@@ -295,4 +361,13 @@ const updateUserInformation = (req, res) => {
       });
     });
 };
-module.exports = { register, login, getAllUser, updateUserInformation };
+module.exports = {
+  register,
+  login,
+  getAllUser,
+  updateUserInformation,
+  requestForgotPassword,
+  resetPassword,
+  getMyProfile,
+  updateMyProfile,
+};
