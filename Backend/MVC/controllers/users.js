@@ -238,39 +238,44 @@ const resetPassword = (req, res) => {
 };
 //=============profileusers===========
 const getMyProfile = (req, res) => {
-  const userId = req.user.id;
-  pool
-    .query(
-      `SELECT 
-        id,
-        firstname,
-        lastname,
-        age,
-        country,
-        phonenumber,
-        date_of_birthday,
-        email
-       FROM users
-       WHERE id = $1`,
-      [userId]
-    )
-    .then((result) => {
-      res.status(200).json({
-        success: true,
-        user: result.rows[0],
+  try {
+    
+    const userId = req.token.user_id;
+
+    pool
+      .query(`SELECT id, firstname, lastname, age, country, phonenumber, date_of_birthday, email FROM users WHERE id=$1`, [userId])
+      .then((result) => {
+        if (result.rows.length === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "User not found",
+          });
+        }
+        res.status(200).json({
+          success: true,
+          user: result.rows[0],
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          success: false,
+          message: "Server error",
+          error: err.message,
+        });
       });
-    })
-    .catch(() => {
-      res.status(500).json({
-        success: false,
-        message: "Server error",
-      });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: "Invalid request",
+      error: err.message,
     });
+  }
 };
+
 
 //================updateProfileUsers=========
 const updateMyProfile = (req, res) => {
-  const userId = req.user.id;
+  const userId = req.token.user_id;
   const { firstname, lastname, age, country, phonenumber, date_of_birthday } =
     req.body;
 
