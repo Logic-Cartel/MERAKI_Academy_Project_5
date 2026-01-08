@@ -44,7 +44,6 @@ const addToCart = async (req, res) => {
       item: result.rows[0],
       cartId: cartId,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -250,6 +249,25 @@ const checkoutPayment = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+const getTotalSales = async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+      SUM(products.price * cart_products.quantity)
+      FROM cart
+      INNER JOIN cart_products ON cart.id = cart_products.cart
+      INNER JOIN products ON cart_products.product = products.id
+      WHERE 
+      cart.is_deleted = true 
+      AND cart.done_at IS NOT NULL;
+      `);
+
+    res.status(200).json(result.rows[0].sum);
+  } catch (err) {
+    console.log(err);
+  }
+};
 module.exports = {
   addToCart,
   getCartWereIsDeletedFalse,
@@ -257,4 +275,5 @@ module.exports = {
   getCartWithProducts,
   updatedQuantity,
   checkoutPayment,
+  getTotalSales,
 };

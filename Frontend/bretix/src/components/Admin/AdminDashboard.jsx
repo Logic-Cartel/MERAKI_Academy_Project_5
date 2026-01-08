@@ -20,6 +20,8 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
+  const [totalSales, setTotalSales] = useState(0);
+  const [storesCount, setStoresCount] = useState(0);
 
   const [imgsrc, setImgSrc] = useState("");
   const [title, setTitle] = useState("");
@@ -105,6 +107,29 @@ const AdminDashboard = () => {
     axios.get(`http://localhost:5000/products/all`).then((result) => {
       setProducts(result.data.products || []);
     });
+  }, []);
+  useEffect(() => {
+    const getTotal = async () => {
+      try {
+        const result = await axios.get(`http://localhost:5000/cart/totalsales`);
+        setTotalSales(result.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getTotal();
+  }, []);
+
+  useEffect(() => {
+    const numOfStores = async () => {
+      try {
+        const result = await axios.get(`http://localhost:5000/stores/all`);
+        setStoresCount(result.data.result.length)  
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    numOfStores()
   }, []);
 
   return (
@@ -238,9 +263,7 @@ const AdminDashboard = () => {
               <div className="section-header">
                 <div>
                   <h3>Eco-Products Catalog</h3>
-                  <p className="subtitle">
-                    Manage your sustainable inventory
-                  </p>
+                  <p className="subtitle">Manage your sustainable inventory</p>
                 </div>
                 <button
                   className={`add-product-btn ${showAddForm ? "close" : ""}`}
@@ -282,9 +305,7 @@ const AdminDashboard = () => {
                       <input
                         type="text"
                         value={description}
-                        onChange={(e) =>
-                          setDescription(e.target.value)
-                        }
+                        onChange={(e) => setDescription(e.target.value)}
                       />
                     </div>
                     <div className="input-field">
@@ -300,9 +321,7 @@ const AdminDashboard = () => {
                       <input
                         type="text"
                         value={categories_id}
-                        onChange={(e) =>
-                          setCategories_id(e.target.value)
-                        }
+                        onChange={(e) => setCategories_id(e.target.value)}
                       />
                     </div>
                     <div className="input-field full-row">
@@ -310,9 +329,7 @@ const AdminDashboard = () => {
                       <input
                         type="text"
                         value={store_id}
-                        onChange={(e) =>
-                          setStore_id(e.target.value)
-                        }
+                        onChange={(e) => setStore_id(e.target.value)}
                       />
                     </div>
                   </div>
@@ -331,9 +348,7 @@ const AdminDashboard = () => {
                     <div className="product-image-wrapper">
                       <img src={product.imgsrc} alt={product.title} />
                       <div className="product-overlay">
-                        <button className="view-details">
-                          Quick View
-                        </button>
+                        <button className="view-details">Quick View</button>
                       </div>
                     </div>
                     <div className="product-info">
@@ -341,12 +356,8 @@ const AdminDashboard = () => {
                         {product.title || "Item"}
                       </h4>
                       <div className="product-meta">
-                        <span className="product-price">
-                          ${product.price}
-                        </span>
-                        <span className="product-stock">
-                          In Stock
-                        </span>
+                        <span className="product-price">${product.price}</span>
+                        <span className="product-stock">In Stock</span>
                       </div>
                     </div>
                   </div>
@@ -371,9 +382,7 @@ const AdminDashboard = () => {
                       <th>Member Info</th>
                       <th>Location</th>
                       <th>Status</th>
-                      <th style={{ textAlign: "right" }}>
-                        Management
-                      </th>
+                      <th style={{ textAlign: "right" }}>Management</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -389,22 +398,17 @@ const AdminDashboard = () => {
                               <span className="name">
                                 {user.firstname} {user.lastname}
                               </span>
-                              <span className="id">
-                                ID: #{user.id}
-                              </span>
+                              <span className="id">ID: #{user.id}</span>
                             </div>
                           </div>
                         </td>
                         <td>
                           <div className="location-chip">
-                            <Leaf size={12} />{" "}
-                            {user.country || "Global"}
+                            <Leaf size={12} /> {user.country || "Global"}
                           </div>
                         </td>
                         <td>
-                          <span className="status-pill active">
-                            Verified
-                          </span>
+                          <span className="status-pill active">Verified</span>
                         </td>
                         <td style={{ textAlign: "right" }}>
                           <button
@@ -430,25 +434,19 @@ const AdminDashboard = () => {
               <div className="stats-grid">
                 <StatCard
                   title="Total Sales"
-                  value="$12,450"
+                  value={`$${totalSales}`}
                   change="+12.5%"
                   icon={<TrendingUp size={20} />}
                   type="emerald"
                 />
                 <StatCard
                   title="Eco Projects"
-                  value="24"
+                  value={storesCount}
                   change="+2"
                   icon={<Leaf size={20} />}
                   type="green"
                 />
-                <StatCard
-                  title="Security Score"
-                  value="98%"
-                  change="Safe"
-                  icon={<ShieldCheck size={20} />}
-                  type="blue"
-                />
+                
               </div>
               <section className="activity-card">
                 <div className="card-header">
@@ -459,8 +457,7 @@ const AdminDashboard = () => {
                     <Package size={40} />
                   </div>
                   <p>
-                    Synchronizing with{" "}
-                    <strong>Bretix API</strong> nodes...
+                    Synchronizing with <strong>Bretix API</strong> nodes...
                   </p>
                 </div>
               </section>
