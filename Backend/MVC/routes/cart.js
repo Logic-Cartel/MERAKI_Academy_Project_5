@@ -6,6 +6,7 @@ const {
   getCartWithProducts,
   updatedQuantity,
   checkoutPayment,
+  getTotalSales,
 } = require("../controllers/cart");
 const authentication = require("../middlewares/authentication");
 const cartRouter = express.Router();
@@ -22,6 +23,7 @@ cartRouter.get(
   authentication,
   getCartWhereIsDeletedTure
 );
+cartRouter.get("/totalsales", getTotalSales)
 cartRouter.get("/with-products", authentication, getCartWithProducts);
 cartRouter.patch("/:cartProductId", authentication, updatedQuantity);
 cartRouter.put("/complete/:cartId",authentication, checkoutPayment)
