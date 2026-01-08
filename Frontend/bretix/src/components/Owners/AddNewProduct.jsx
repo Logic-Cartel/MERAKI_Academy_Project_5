@@ -24,6 +24,18 @@ const AddNewProduct = () => {
   const [rate, setRate] = useState("");
   const [categories_id, setCategories_id] = useState("");
   const [store_id, setStore_id] = useState(id);
+  const [allCategories, setAllCategories] = useState([])
+
+  useEffect(()=>{
+    const getCategories = async ()=>{
+      try{
+        const result = await axios.get(`http://localhost:5000/categories/`)
+        setAllCategories(result.data.categories)
+      }catch(err){console.log(err);
+      }
+    }
+    getCategories()
+  },[])
 
   const confirm = async () => {
     const token = localStorage.getItem("token");
@@ -73,12 +85,13 @@ const AddNewProduct = () => {
           </div>
 
           <div className="input-group">
-            <label>Category ID</label>
-            <input
-              type="text"
-              placeholder="e.g. 1"
-              onChange={(e) => setCategories_id(e.target.value)}
-            />
+            <label>Category</label>
+            <select onChange={(e)=>{setCategories_id(e.target.value)}}>
+              <option >Choose Category</option>
+              {allCategories.map((cat)=>{
+                return <option value={cat.id} key={cat.id}>{cat.name}</option>
+              })}
+            </select>
           </div>
 
           <div className="input-group full-width">

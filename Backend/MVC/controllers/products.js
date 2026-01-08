@@ -65,7 +65,10 @@ const getAllProducts = (req, res) => {
 const getProductById = (req, res) => {
   const productId = req.params.id;
 
-  const query = `SELECT * FROM products WHERE id = $1`;
+  const query = `SELECT *,categories.name FROM products 
+  INNER JOIN categories ON products.categories_id = categories.id
+  WHERE products.id = $1
+  `;
 
   pool
     .query(query, [productId])
