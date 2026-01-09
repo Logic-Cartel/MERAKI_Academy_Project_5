@@ -7,10 +7,12 @@ function Products() {
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedStores, setSelectedStores] = useState("");
+
   const [stores, setStores] = useState([]);
   const [toast, setToast] = useState({ show: false, message: "" });
-  const [showDropDown, setShowDropDown] = useState(false);
-
+  const [showDropDownCatagry, setShowDropDownCatagry] = useState(false);
+  const [showDropDownStores, setShowDropDownStores] = useState(false);
   useEffect(() => {
     axios
       .get("http://localhost:5000/products/all")
@@ -34,11 +36,30 @@ function Products() {
       .catch((err) => console.log("Error stores:", err));
   }, []);
 
-  const filteredProducts = products.filter((item) => {
-    if (!selectedCategory) return true;
-    return item.categories_id == selectedCategory;
-  });
-  console.log(filteredProducts);
+const productsByCategory = products.filter(
+  (item) => !selectedCategory || item.categories_id == selectedCategory
+);
+
+
+const storeIds = [...new Set(productsByCategory.map((p) => p.store_id))];
+
+
+const filteredStore = selectedCategory
+  ? stores.filter((store) => storeIds.includes(store.id))
+  : stores;
+
+const filteredProducts = products.filter((item) => {
+  const matchCategory = selectedCategory
+    ? item.categories_id == selectedCategory
+    : true;
+
+  const matchStore = selectedStores
+    ? item.store_id == selectedStores
+    : true;
+
+  return matchCategory && matchStore;
+});
+
 
   const showToast = (message) => {
     setToast({ show: true, message });
@@ -125,23 +146,18 @@ function Products() {
       <div className="category-filter-bar">
         <button
           className={selectedCategory === "" ? "active" : ""}
-          onClick={() => setSelectedCategory("")}
-        >
-          All Products
-        </button>
-        <button
-          className={selectedCategory === "" ? "active" : ""}
-          onClick={() => setShowDropDown(!showDropDown)}
+          onClick={() => setShowDropDownCatagry(!showDropDownCatagry)}
         >
           All Categories
         </button>
-        {showDropDown && (
+
+        {showDropDownCatagry && (
           <select
             className="category-dropdown"
             value={selectedCategory}
             onChange={(e) => {
               setSelectedCategory(e.target.value);
-              setShowDropDown(false);
+              setShowDropDownCatagry(false);
             }}
           >
             <option value="">All Products</option>
@@ -149,6 +165,32 @@ function Products() {
             {category.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+
+      <div>
+        {" "}
+        <button
+          className={selectedStores === "" ? "active" : ""}
+          onClick={() => setShowDropDownStores(!showDropDownStores)}
+        >
+          All Stores
+        </button>
+        {showDropDownStores && (
+          <select
+            className="stores-dropdown"
+            value={selectedStores}
+            onChange={(e) => {
+              setSelectedStores(e.target.value);
+              setShowDropDownStores(false);
+            }}
+          >
+            {filteredStore.map((store) => (
+              <option key={store.id} value={store.id}>
+                {store.title}
               </option>
             ))}
           </select>
