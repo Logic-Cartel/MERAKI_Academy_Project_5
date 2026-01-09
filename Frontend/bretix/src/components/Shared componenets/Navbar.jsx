@@ -27,6 +27,7 @@ const Navbar = () => {
     window.addEventListener("cartUpdated", handleStorageChange);
     return () => window.removeEventListener("cartUpdated", handleStorageChange);
   }, []);
+
   return (
     <nav className="navbar-container">
       <div className="nav-group left">
@@ -100,6 +101,7 @@ const Navbar = () => {
             Store Management
           </button>
         )}
+
         {role === "1" && (
           <button
             className="icon-btn admin-link"
@@ -122,6 +124,7 @@ const Navbar = () => {
             </button>
           </>
         )}
+
         {role !== null && (
           <button
             className="icon-btn"
@@ -131,6 +134,7 @@ const Navbar = () => {
             <FaUserPlus size={35} />
           </button>
         )}
+
         {role !== null && (
           <button
             className="icon-btn logout"
