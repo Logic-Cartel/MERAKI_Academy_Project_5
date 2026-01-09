@@ -73,7 +73,7 @@ const Navbar = () => {
           >
             <FaUserPlus size={35} />
           </button>
-        )}
+        
 
           {showDropdown && (
             <div className="nav-dropdown-menu" >
