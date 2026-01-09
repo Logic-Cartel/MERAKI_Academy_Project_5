@@ -20,8 +20,6 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
-  const [totalSales, setTotalSales] = useState(0);
-  const [storesCount, setStoresCount] = useState(0);
 
   const [imgsrc, setImgSrc] = useState("");
   const [title, setTitle] = useState("");
@@ -52,7 +50,7 @@ const AdminDashboard = () => {
 
     axios
       .put(`http://localhost:5000/users/update/${usersEdit.id}`, usersEdit)
-      .then(() => {
+      .then((result) => {
         const updatedUsers = users.map((u) =>
           u.id === usersEdit.id ? { ...u, ...usersEdit } : u
         );
@@ -63,8 +61,7 @@ const AdminDashboard = () => {
       })
       .catch((err) => {
         console.error("Error updating user:", err);
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 3000);
+        alert("حدث خطأ أثناء التحديث");
       });
   };
 
@@ -78,7 +75,6 @@ const AdminDashboard = () => {
       categories_id,
       store_id,
     };
-
     axios
       .post(`http://localhost:5000/products/`, adminAddProduct)
       .then((result) => {
@@ -107,29 +103,6 @@ const AdminDashboard = () => {
     axios.get(`http://localhost:5000/products/all`).then((result) => {
       setProducts(result.data.products || []);
     });
-  }, []);
-  useEffect(() => {
-    const getTotal = async () => {
-      try {
-        const result = await axios.get(`http://localhost:5000/cart/totalsales`);
-        setTotalSales(result.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getTotal();
-  }, []);
-
-  useEffect(() => {
-    const numOfStores = async () => {
-      try {
-        const result = await axios.get(`http://localhost:5000/stores/all`);
-        setStoresCount(result.data.result.length)  
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    numOfStores()
   }, []);
 
   return (
@@ -247,13 +220,8 @@ const AdminDashboard = () => {
             <p>Welcome back, here's what's happening today.</p>
           </div>
           <div className="header-profile">
-            <div className="profile-info">
-              <p className="admin-name">Administrator</p>
-              <p className="admin-status">Verified Account</p>
-            </div>
-            <div className="profile-avatar">
-              AD<div className="online-indicator"></div>
-            </div>
+            
+           
           </div>
         </header>
 
@@ -368,13 +336,7 @@ const AdminDashboard = () => {
 
           {activeTab === "users" && (
             <div className="users-section animate-fade-in">
-              <div className="section-header-modern">
-                <div>
-                  <h3>Eco-System Members</h3>
-                  <p>{users.length} verified sustainable users</p>
-                </div>
-              </div>
-
+              
               <div className="modern-table-container">
                 <table className="modern-table">
                   <thead>
@@ -396,9 +358,9 @@ const AdminDashboard = () => {
                             </div>
                             <div className="user-text">
                               <span className="name">
-                                {user.firstname} {user.lastname}
+                                {user.firstname} 
                               </span>
-                              <span className="id">ID: #{user.id}</span>
+                              
                             </div>
                           </div>
                         </td>
@@ -434,19 +396,25 @@ const AdminDashboard = () => {
               <div className="stats-grid">
                 <StatCard
                   title="Total Sales"
-                  value={`$${totalSales}`}
+                  value="$12,450"
                   change="+12.5%"
                   icon={<TrendingUp size={20} />}
                   type="emerald"
                 />
                 <StatCard
                   title="Eco Projects"
-                  value={storesCount}
+                  value="24"
                   change="+2"
                   icon={<Leaf size={20} />}
                   type="green"
                 />
-                
+                <StatCard
+                  title="Security Score"
+                  value="98%"
+                  change="Safe"
+                  icon={<ShieldCheck size={20} />}
+                  type="blue"
+                />
               </div>
               <section className="activity-card">
                 <div className="card-header">

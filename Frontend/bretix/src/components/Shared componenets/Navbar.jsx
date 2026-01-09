@@ -82,9 +82,7 @@ const Navbar = () => {
                   <div className="dropdown-item" onClick={() => {navigate("/Login"); setShowDropdown(false);}}>
                     <FaUser /> <span>Login</span>
                   </div>
-                  <div className="dropdown-item" onClick={() => {navigate("/Register"); setShowDropdown(false);}}>
-                    <FaUserPlus /> <span>Register</span>
-                  </div>
+                  
                 </>
               ) : (
                 <>
