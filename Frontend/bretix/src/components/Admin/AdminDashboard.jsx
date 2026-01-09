@@ -9,6 +9,7 @@ import {
   Leaf,
   ShieldCheck,
   CheckCircle,
+  Calendar,
 } from "lucide-react";
 import axios from "axios";
 import "./AdminDashboard.css";
@@ -20,6 +21,9 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
+  const [totalSales, setTotalSales] = useState(0);
+  const [storesCount, setStoresCount] = useState(0);
+  const [completedSalesCarts, setCSC] = useState(0);
 
   const [imgsrc, setImgSrc] = useState("");
   const [title, setTitle] = useState("");
@@ -28,12 +32,21 @@ const AdminDashboard = () => {
   const [rate, setRate] = useState("");
   const [categories_id, setCategories_id] = useState("");
   const [store_id, setStore_id] = useState("");
+  const [page, setPage] = useState(1);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
   const [usersEdit, setUsersEdit] = useState({});
   const [showEditForm, setShowEditForm] = useState(false);
+
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const menuItems = [
     { id: "overview", name: "Dashboard", icon: <LayoutDashboard size={20} /> },
@@ -96,6 +109,31 @@ const AdminDashboard = () => {
       .catch((err) => console.log(err));
   };
 
+  const fetchCompletedOrders = async () => {
+    setIsLoadingOrders(true);
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/cart/allcompleted",
+        {
+          params: {
+            pageNumber: currentPage,
+            limit: 10,
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+          },
+        }
+      );
+
+      setCompletedOrders(response.data.data);
+      setTotalPages(response.data.pagination.totalPages);
+      setTotalOrders(response.data.pagination.totalOrders);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+    } finally {
+      setIsLoadingOrders(false);
+    }
+  };
+
   useEffect(() => {
     axios.get(`http://localhost:5000/users/`).then((result) => {
       setUsers(result.data.result || []);
@@ -104,6 +142,39 @@ const AdminDashboard = () => {
       setProducts(result.data.products || []);
     });
   }, []);
+
+  useEffect(() => {
+    const getTotal = async () => {
+      try {
+        const result = await axios.get(
+          `http://localhost:5000/cart/totalsales`
+        );
+        setTotalSales(result.data.total);
+        setCSC(result.data.numOfCarts);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getTotal();
+  }, []);
+
+  useEffect(() => {
+    const numOfStores = async () => {
+      try {
+        const result = await axios.get(`http://localhost:5000/stores/all`);
+        setStoresCount(result.data.result.length);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    numOfStores();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === "overview") {
+      fetchCompletedOrders();
+    }
+  }, [currentPage, startDate, endDate, activeTab]);
 
   return (
     <div className="dashboard-container">
@@ -396,8 +467,7 @@ const AdminDashboard = () => {
               <div className="stats-grid">
                 <StatCard
                   title="Total Sales"
-                  value="$12,450"
-                  change="+12.5%"
+                  value={`$${totalSales}`}
                   icon={<TrendingUp size={20} />}
                   type="emerald"
                 />
@@ -409,26 +479,252 @@ const AdminDashboard = () => {
                   type="green"
                 />
                 <StatCard
-                  title="Security Score"
-                  value="98%"
-                  change="Safe"
-                  icon={<ShieldCheck size={20} />}
-                  type="blue"
+                  title="Completed Orders"
+                  value={totalOrders}
+                  icon={<CheckCircle size={20} />}
+                  type="emerald"
                 />
               </div>
-              <section className="activity-card">
-                <div className="card-header">
-                  <h3>Recent Ecosystem Activity</h3>
-                </div>
-                <div className="card-body">
-                  <div className="loading-animation">
-                    <Package size={40} />
+
+              <div
+                style={{
+                  marginTop: "30px",
+                  background: "white",
+                  borderRadius: "12px",
+                  padding: "24px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <h3>Recent Completed Orders</h3>
+
+                  <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                      <Calendar size={16} />
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        style={{
+                          padding: "8px 12px",
+                          border: "1px solid #d1d5db",
+                          borderRadius: "6px",
+                          fontSize: "14px",
+                        }}
+                      />
+                    </div>
+                    <span>to</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                      <Calendar size={16} />
+                      <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => {
+                          setEndDate(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        style={{
+                          padding: "8px 12px",
+                          border: "1px solid #d1d5db",
+                          borderRadius: "6px",
+                          fontSize: "14px",
+                        }}
+                      />
+                    </div>
+                    {(startDate || endDate) && (
+                      <button
+                        onClick={() => {
+                          setStartDate("");
+                          setEndDate("");
+                          setCurrentPage(1);
+                        }}
+                        style={{
+                          padding: "8px 16px",
+                          background: "#ef4444",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                        }}
+                      >
+                        Clear
+                      </button>
+                    )}
                   </div>
-                  <p>
-                    Synchronizing with <strong>Bretix API</strong> nodes...
-                  </p>
                 </div>
-              </section>
+
+                {isLoadingOrders ? (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "40px",
+                      color: "#6b7280",
+                    }}
+                  >
+                    Loading orders...
+                  </div>
+                ) : (
+                  <>
+                    <div className="modern-table-container">
+                      <table className="modern-table">
+                        <thead>
+                          <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Products</th>
+                            <th>Total</th>
+                            <th>Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {completedOrders.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan="5"
+                                style={{ textAlign: "center", padding: "40px" }}
+                              >
+                                No orders found
+                              </td>
+                            </tr>
+                          ) : (
+                            completedOrders.map((order) => (
+                              <tr key={order.cart_id}>
+                                <td>
+                                  <span
+                                    style={{
+                                      fontWeight: "600",
+                                      color: "#10b981",
+                                    }}
+                                  >
+                                    #{order.cart_id}
+                                  </span>
+                                </td>
+                                <td>{order.user_name}</td>
+                                <td>
+                                  <span
+                                    style={{
+                                      display: "inline-block",
+                                      padding: "4px 12px",
+                                      background: "#f3f4f6",
+                                      borderRadius: "12px",
+                                      fontSize: "13px",
+                                      color: "#6b7280",
+                                    }}
+                                  >
+                                    {order.num_of_products} items
+                                  </span>
+                                </td>
+                                <td
+                                  style={{
+                                    fontWeight: "600",
+                                    color: "#059669",
+                                    fontSize: "15px",
+                                  }}
+                                >
+                                  ${parseFloat(order.total).toFixed(2)}
+                                </td>
+                                <td style={{ color: "#6b7280", fontSize: "14px" }}>
+                                  {new Date(order.done_at).toLocaleDateString(
+                                    "en-US",
+                                    {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                    }
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "12px",
+                          marginTop: "24px",
+                          paddingTop: "24px",
+                          borderTop: "1px solid #e5e7eb",
+                        }}
+                      >
+                        <button
+                          onClick={() => setCurrentPage(currentPage - 1)}
+                          disabled={currentPage === 1}
+                          style={{
+                            padding: "8px 16px",
+                            background: "white",
+                            border: "1px solid #d1d5db",
+                            borderRadius: "8px",
+                            cursor:
+                              currentPage === 1 ? "not-allowed" : "pointer",
+                            opacity: currentPage === 1 ? 0.5 : 1,
+                            fontWeight: "500",
+                            color: "#374151",
+                          }}
+                        >
+                          Previous
+                        </button>
+
+                        <span
+                          style={{
+                            color: "#6b7280",
+                            fontSize: "14px",
+                          }}
+                        >
+                          Page {currentPage} of {totalPages}
+                        </span>
+
+                        <button
+                          onClick={() => setCurrentPage(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                          style={{
+                            padding: "8px 16px",
+                            background: "white",
+                            border: "1px solid #d1d5db",
+                            borderRadius: "8px",
+                            cursor:
+                              currentPage === totalPages
+                                ? "not-allowed"
+                                : "pointer",
+                            opacity: currentPage === totalPages ? 0.5 : 1,
+                            fontWeight: "500",
+                            color: "#374151",
+                          }}
+                        >
+                          Next
+                        </button>
+                      </div>
+                    )}
+
+                    <div
+                      style={{
+                        textAlign: "center",
+                        marginTop: "12px",
+                        color: "#6b7280",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Showing {completedOrders.length} of {totalOrders} orders
+                    </div>
+                  </>
+                )}
+              </div>
             </>
           )}
         </main>
