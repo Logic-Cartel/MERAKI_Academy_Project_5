@@ -7,11 +7,13 @@ const {
   updatedQuantity,
   checkoutPayment,
   getTotalSales,
+  getCompletedOrders,
 } = require("../controllers/cart");
 const authentication = require("../middlewares/authentication");
 const cartRouter = express.Router();
 
 //========================
+cartRouter.get("/allcompleted", getCompletedOrders)
 cartRouter.post("/", authentication, addToCart);
 cartRouter.get(
   "/getCartWhereIsDeletedFalse",

@@ -253,9 +253,7 @@ const checkoutPayment = async (req, res) => {
 const getTotalSales = async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT 
-      SUM(products.price * cart_products.quantity)
-      FROM cart
+      SELECT quantity,price FROM cart
       INNER JOIN cart_products ON cart.id = cart_products.cart
       INNER JOIN products ON cart_products.product = products.id
       WHERE 
@@ -263,9 +261,95 @@ const getTotalSales = async (req, res) => {
       AND cart.done_at IS NOT NULL;
       `);
 
-    res.status(200).json(result.rows[0].sum);
+      const total = result.rows.reduce((sum,cart)=>{
+        return sum + (cart.quantity*cart.price)
+      },0)
+
+      const numOfCarts = result.rows.length
+
+      res.status(200).json({
+        total:total,
+        numOfCarts:numOfCarts
+      })
+
   } catch (err) {
     console.log(err);
+  }
+};
+
+const getCompletedOrders = async (req, res) => {
+  const pageNumber = parseInt(req.query.pageNumber) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+  
+  const offset = (pageNumber - 1) * limit;
+
+  try {
+    let whereClause = `WHERE cart.is_deleted = true AND cart.done_at IS NOT NULL`;
+    const queryParams = [limit, offset];
+    let paramIndex = 3;
+
+    if (startDate) {
+      whereClause += ` AND cart.done_at >= $${paramIndex}`;
+      queryParams.push(startDate);
+      paramIndex++;
+    }
+
+    if (endDate) {
+      whereClause += ` AND cart.done_at <= $${paramIndex}`;
+      queryParams.push(endDate);
+    }
+
+    const dataQuery = `
+      SELECT 
+        cart.id AS cart_id,
+        cart.done_at,
+        users.firstname || ' ' || users.lastname AS user_name,
+        COUNT(cart_products.id) AS num_of_products,
+        SUM(cart_products.quantity * products.price) AS total
+      FROM cart
+      INNER JOIN users ON cart.users_id = users.id
+      INNER JOIN cart_products ON cart.id = cart_products.cart
+      INNER JOIN products ON cart_products.product = products.id
+      ${whereClause}
+      GROUP BY cart.id, cart.done_at, users.firstname, users.lastname
+      ORDER BY cart.done_at DESC
+      LIMIT $1 OFFSET $2
+    `;
+
+    const dataResult = await pool.query(dataQuery, queryParams);
+
+    const countQuery = `
+      SELECT COUNT(DISTINCT cart.id) AS total
+      FROM cart
+      INNER JOIN cart_products ON cart.id = cart_products.cart
+      ${whereClause}
+    `;
+
+    const countParams = queryParams.slice(2); 
+    const countResult = await pool.query(countQuery, countParams);
+
+    const totalOrders = parseInt(countResult.rows[0].total);
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    res.status(200).json({
+      success: true,
+      data: dataResult.rows,
+      pagination: {
+        currentPage: pageNumber,
+        totalPages: totalPages,
+        totalOrders: totalOrders,
+        limit: limit
+      }
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching completed orders"
+    });
   }
 };
 module.exports = {
@@ -276,4 +360,5 @@ module.exports = {
   updatedQuantity,
   checkoutPayment,
   getTotalSales,
+  getCompletedOrders
 };
