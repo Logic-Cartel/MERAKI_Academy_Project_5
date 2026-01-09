@@ -21,6 +21,19 @@ const ProductView = () => {
 
   const [product, setProduct] = useState({});
   const [editedProduct, setEditedProduct] = useState({});
+  const [allCategories, setAllCategories] = useState([]);
+
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const result = await axios.get(`http://localhost:5000/categories/`);
+        setAllCategories(result.data.categories);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getCategories();
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -33,6 +46,8 @@ const ProductView = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+        console.log(result.data.product);
+
         setProduct(result.data.product);
         setEditedProduct(result.data.product);
       } catch (err) {
@@ -179,17 +194,22 @@ const ProductView = () => {
 
           <div className="input-row">
             <div className="input-field">
-              <label>Category ID</label>
-              <input
-                type="text"
-                value={editedProduct.categories_id || ""}
+              <label>Category</label>
+              <select
                 onChange={(e) =>
                   setEditedProduct({
                     ...editedProduct,
                     categories_id: e.target.value,
                   })
                 }
-              />
+              >
+                <option value={editedProduct.category_id}>
+                  {editedProduct.name}
+                </option>
+                {allCategories.map((cat)=>{
+                return <option value={cat.id} key={cat.id}>{cat.name}</option>
+              })}
+              </select>
             </div>
             <div className="input-field">
               <label>Price ($)</label>
