@@ -10,6 +10,8 @@ const {
   getMyProfile,
   updateMyProfile,
   changePassword,
+  requestEmailChange,
+  verifyEmailChange,
 } = require("../controllers/users");
 
 const authentication = require("../middlewares/authentication");
@@ -25,5 +27,7 @@ usersRouter.post("/reset-password", resetPassword);
 usersRouter.get("/", getAllUser);
 usersRouter.put("/update/:id", updateUserInformation);
 usersRouter.put("/change-password", authentication, changePassword);
+usersRouter.post("/request-email-change", authentication, requestEmailChange);
+usersRouter.put("/verify-email-change", authentication, verifyEmailChange);
 
 module.exports = usersRouter;
