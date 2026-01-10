@@ -1,6 +1,5 @@
 .add-product-wrapper {
     background-color: #f9fbf9;
-    /* خلفية فاتحة جداً مائلة للأخضر */
     min-height: 90vh;
     display: flex;
     justify-content: center;
@@ -15,13 +14,11 @@
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(34, 64, 55, 0.08);
-    /* ظل خفيف بلون البراند */
     border: 1px solid #e0e7e0;
 }
 
 .form-title {
     color: #224037;
-    /* لون بريتكس الأساسي */
     font-size: 28px;
     margin-bottom: 5px;
     text-align: center;
@@ -34,11 +31,10 @@
     font-size: 14px;
 }
 
-/* استخدام الـ GRID لتوزيع الحقول */
+
 .product-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* عمودين */
     gap: 20px;
 }
 
@@ -48,7 +44,7 @@
     gap: 8px;
 }
 
-/* لجعل الوصف يأخذ العرض كاملاً */
+
 .full-width {
     grid-column: span 2;
 }
@@ -100,11 +96,11 @@
     box-shadow: 0 5px 15px rgba(34, 64, 55, 0.2);
 }
 
-/* تجاوب مع الموبايل */
+
 @media (max-width: 600px) {
     .product-grid {
         grid-template-columns: 1fr;
-        /* عمود واحد في الشاشات الصغيرة */
+        
     }
 
     .full-width {

@@ -182,7 +182,7 @@ body {
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
 }
 
-/* القائمة المنسدلة */
+
 .nav-dropdown-menu {
     position: absolute;
     top: calc(100% + 15px);

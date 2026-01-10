@@ -605,43 +605,41 @@ body {
 .eco-toast-box.error p {
   color: #e5e7eb;
 }
-/* ===============================
-   DASHBOARD CONTAINMENT FIX
-   =============================== */
 
-/* يمنع أي overflow أفقي على مستوى الصفحة */
+
+
 html, body {
   width: 100%;
   overflow-x: hidden;
 }
 
-/* الكونتينر الأساسي */
+
 .dashboard-container {
   max-width: 100vw;
   overflow: hidden;
 }
 
-/* الجزء الرئيسي */
+
 .main-wrapper {
   min-width: 0;
-  max-width: calc(100vw - 280px); /* عرض الشاشة ناقص السايدبار */
+  max-width: calc(100vw - 280px); 
   overflow: hidden;
 }
 
-/* المحتوى الداخلي */
+
 .content {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
 }
 
-/* الجريد (Stats / Cards) */
+
 .stats-grid {
   width: 100%;
   max-width: 100%;
 }
 
-/* أي كارد */
+
 .stat-card,
 .activity-card,
 .modern-table-container {
@@ -649,7 +647,7 @@ html, body {
   overflow: hidden;
 }
 
-/* الجداول */
+
 .modern-table {
   width: 100%;
   table-layout: fixed;
@@ -661,70 +659,63 @@ html, body {
   overflow-wrap: break-word;
 }
 
-/* يمنع العناصر الفلكس من التمدد */
+
 .stat-card,
 .card-header,
 .user-profile-cell {
   min-width: 0;
 }
 
-/* للمودالات (حتى ما تكسر العرض) */
+
 .modal-content,
 .edit-modal-content {
   max-width: 90vw;
 }
 
-/* ===============================
-   ALIGN CONTENT TO TOP FIX
-   =============================== */
 
-/* تأكيد إنو المحتوى يبدأ من فوق */
+
 .main-wrapper {
   justify-content: flex-start;
 }
 
-/* تقليل المسافة العلوية بدون كسر الديزاين */
+
 .content {
-  padding-top: 1.25rem; /* كان حاسسها كبيرة */
+  padding-top: 1.25rem; 
 }
 
-/* لو في أول كارد أو جريد عامل مسافة زيادة */
+
 .content > *:first-child {
   margin-top: 0;
 }
 
-/* رفع الكارد الرئيسي */
+
 .stats-grid {
   margin-top: 0;
 }
-/* ===============================
-   REMOVE TOP GAP UNDER NAVBAR
-   =============================== */
 
-/* خفّض المسافة العلوية للمحتوى */
+
+
 .content {
-  padding-top: 0.75rem; /* كان 2rem */
+  padding-top: 0.75rem; 
 }
 
-/* أول عنصر داخل المحتوى (OVERVIEW box) */
+
 .content > :first-child {
   margin-top: 0 !important;
 }
 
-/* لو OVERVIEW wrapper له margin */
+
 .overview,
 .overview-container,
 .overview-card {
   margin-top: 0 !important;
 }
 
-/* حل جذري لو ظل في فراغ */
+
 .main-wrapper {
   padding-top: 0;
 }
-/* ===============================
-   UNIFY GREEN CIRCLES (AVATARS)
-   =============================== */
+
 
 .avatar-circle {
   width: 48px;
@@ -761,9 +752,7 @@ html, body {
 .avatar-circle {
   box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
 }
-/* ===============================
-   FORCE AVATAR SIZE FIX
-   =============================== */
+
 
 .avatar-circle {
   width: 52px !important;
@@ -798,24 +787,24 @@ html, body {
 .modern-table tr {
   height: 76px;
 }
-/* هذا الجزء هو المسؤول عن توحيد حجم الصور */
+
 .product-image-wrapper {
-  width: 100%;        /* ياخذ كامل عرض الكرت */
-  height: 200px;      /* حدد ارتفاع ثابت لكل الصور (فيك تغير الرقم حسب رغبتك) */
-  overflow: hidden;   /* عشان لو الصورة أكبر من المربع ما تطلع برا */
-  background: #f8f8f8; /* خلفية خفيفة للصور اللي شفافة */
+  width: 100%;        
+  height: 200px;      
+  overflow: hidden;   
+  background: #f8f8f8; 
   border-bottom: 1px solid #eee;
 }
 
 .product-image-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover;  /* هاد أهم سطر: بخلي الصورة تتعبى داخل المربع بدون ما تتمزع أو يتغير أبعادها */
-  object-position: center; /* بخلي نص الصورة هو اللي يظهر */
+  object-fit: cover;  
+  object-position: center; 
   transition: transform 0.3s ease;
 }
 
-/* حركة اختيارية: تكبير بسيط عند تمرير الماوس */
+
 .product-card:hover .product-image-wrapper img {
   transform: scale(1.05);
 }

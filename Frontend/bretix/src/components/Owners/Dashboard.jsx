@@ -139,7 +139,7 @@ const Dashboard = () => {
             </div>
           </section>
 
-          {/* قسم الشارت البسيط (Last 7 Days) */}
+          
           <section className="chart-section">
             <div className="section-card-header">
               <h3>Revenue (Last 7 Days)</h3>

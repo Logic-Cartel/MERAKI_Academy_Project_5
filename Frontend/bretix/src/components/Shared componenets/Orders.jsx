@@ -16,9 +16,9 @@ function Orders() {
         },
       })
       .then((result) => {
-        //setToken(result.data.token);
+        
         setOrders(result.data.items);
-        setIs_deleted(true);
+        setIsDeleted(true);
       })
       .catch((err) => {
         console.log(err);

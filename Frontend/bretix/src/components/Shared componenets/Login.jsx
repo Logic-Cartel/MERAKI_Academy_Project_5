@@ -57,7 +57,13 @@ function Login() {
         setError("Invalid email or password");
       });
   };
-
+  const renderAnimatedLabel = (text) => {
+    return text.split("").map((letter, index) => (
+      <span key={index} className="char" style={{ "--index": index }}>
+        {letter === " " ? "\u00A0" : letter}
+      </span>
+    ));
+  };
   const roleState = useSelector((state) => {
     return state.role.role;
   });
@@ -69,23 +75,34 @@ function Login() {
         <p>Login to your eco-friendly account</p>
 
         {error && <div className="error-msg">{error}</div>}
-
         <div className="login-form">
-          <input
-            className="email"
-            type="email"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <div className="input-group">
+            <input
+              className="logininput"
+              type="email"
+              placeholder=" "
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <label className="loginlabel">
+              {renderAnimatedLabel("Email address")}
+            </label>
+          </div>
 
-          <input
-            className="password"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="input-group">
+            <input
+              className="logininput"
+              type="password"
+              placeholder=" "
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <label className="loginlabel">
+              {renderAnimatedLabel("Password")}
+            </label>
+          </div>
 
           <button onClick={loginNow}>Login</button>
         </div>
@@ -105,7 +122,8 @@ function Login() {
               cursor: "pointer",
               color: "#2d6a4f",
               fontSize: "14px",
-              textAlign: "right",
+              textAlign: "center",
+              fontWeight: "500",
             }}
           >
             Forgot Password?
