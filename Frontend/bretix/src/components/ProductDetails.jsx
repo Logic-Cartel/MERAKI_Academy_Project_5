@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./ProductDetails.css";
 import { FaPlus, FaMinus, FaShoppingCart } from "react-icons/fa";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [addingToCart, setAddingToCart] = useState(false);
+
   const increseQu = () => setQuantity((prev) => prev + 1);
   const decreseQu = () => {
     if (quantity > 1) setQuantity((prev) => prev - 1);
   };
+
   useEffect(() => {
     axios
       .get(`http://localhost:5000/products/${id}`)
@@ -26,6 +30,40 @@ const ProductDetails = () => {
         setLoading(false);
       });
   }, [id]);
+
+  const addToCart = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/Login");
+      return;
+    }
+
+    setAddingToCart(true);
+
+    try {
+      await axios.post(
+        "http://localhost:5000/cart",
+        {
+          products_id: id,
+          quantity: quantity,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const currentCount = parseInt(localStorage.getItem("cartCount") || "0");
+      localStorage.setItem("cartCount", currentCount + 1);
+
+      setQuantity(1);
+      
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAddingToCart(false);
+    }
+  };
 
   if (loading) return <p className="loading">Loading...</p>;
   if (!product) return <p className="loading">Product not found</p>;
@@ -58,8 +96,13 @@ const ProductDetails = () => {
 
           <div className="details-footer">
             <span className="price">${product.price}</span>
-            <button className="add-to-cart-btn">
-              <span className="plus-icon">+</span> Cart
+            <button 
+              className="add-to-cart-btn" 
+              onClick={addToCart}
+              disabled={addingToCart}
+            >
+              <span className="plus-icon">+</span> 
+              {addingToCart ? "Adding..." : "Cart"}
             </button>
           </div>
         </div>
