@@ -75,7 +75,7 @@ function Profile() {
     try {
       await axios.post(
         "http://localhost:5000/users/request-email-change",
-        { newEmail: newEmail.trim() }, 
+        { newEmail: newEmail.trim() },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -90,7 +90,7 @@ function Profile() {
   // ================== Confirm Verification Code ==================
   const confirmEmailCode = async () => {
     try {
-      const trimmedCode = verificationCode.trim(); 
+      const trimmedCode = verificationCode.trim();
       await axios.put(
         "http://localhost:5000/users/verify-email-change",
         { code: trimmedCode },
@@ -123,43 +123,79 @@ function Profile() {
 
         <div className="profile-grid">
           <div className="input-group-modern">
-            <label><User size={18} /> First Name</label>
-            <input name="firstname" value={user.firstname} onChange={handleChange} />
-          </div>
-
-          <div className="input-group-modern">
-            <label><User size={18} /> Last Name</label>
-            <input name="lastname" value={user.lastname} onChange={handleChange} />
-          </div>
-
-          <div className="input-group-modern">
-            <label><Award size={18} /> Age</label>
-            <input type="number" name="age" value={user.age} onChange={handleChange} />
-          </div>
-
-          <div className="input-group-modern">
-            <label><Globe size={18} /> Country</label>
-            <input name="country" value={user.country} onChange={handleChange} />
-          </div>
-
-          <div className="input-group-modern">
-            <label><Phone size={18} /> Phone Number</label>
-            <input name="phonenumber" value={user.phonenumber} onChange={handleChange} />
-          </div>
-
-          <div className="input-group-modern">
-            <label><Calendar size={18} /> Date of Birth</label>
+            <label>
+              <User size={18} /> First Name
+            </label>
             <input
-              type="date"
-              name="date_of_birthday"
-              value={user.date_of_birthday ? user.date_of_birthday.slice(0, 10) : ""}
+              name="firstname"
+              value={user.firstname}
               onChange={handleChange}
             />
           </div>
 
-          {/* ================= Email Section ================= */}
+          <div className="input-group-modern">
+            <label>
+              <User size={18} /> Last Name
+            </label>
+            <input
+              name="lastname"
+              value={user.lastname}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="input-group-modern">
+            <label>
+              <Award size={18} /> Age
+            </label>
+            <input
+              type="number"
+              name="age"
+              value={user.age}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="input-group-modern">
+            <label>
+              <Globe size={18} /> Country
+            </label>
+            <input
+              name="country"
+              value={user.country}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="input-group-modern">
+            <label>
+              <Phone size={18} /> Phone Number
+            </label>
+            <input
+              name="phonenumber"
+              value={user.phonenumber}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="input-group-modern">
+            <label>
+              <Calendar size={18} /> Date of Birth
+            </label>
+            <input
+              type="date"
+              name="date_of_birthday"
+              value={
+                user.date_of_birthday ? user.date_of_birthday.slice(0, 10) : ""
+              }
+              onChange={handleChange}
+            />
+          </div>
+
           <div className="input-group-modern full-width">
-            <label><Mail size={18} /> Email Address</label>
+            <label>
+              <Mail size={18} /> Email Address
+            </label>
 
             <div className="email-edit-wrapper">
               <input
@@ -208,7 +244,11 @@ function Profile() {
           </button>
 
           {message && (
-            <div className={`status-msg ${message.includes("success") ? "success" : "error"}`}>
+            <div
+              className={`status-msg ${
+                message.includes("success") ? "success" : "error"
+              }`}
+            >
               {message}
             </div>
           )}

@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Package, Settings, LogOut, 
   Store, Leaf, ArrowLeft, Save, RefreshCcw, Image as ImageIcon
 } from "lucide-react";
-import "./StoreManagement.css"; // الملف الموحد
+import "./StoreManagement.css";
 
 const StoreInfo = () => {
   const navigate = useNavigate();
@@ -79,7 +79,6 @@ const StoreInfo = () => {
 
   return (
     <div className="owner-dashboard-container">
-      {/* Sidebar الموحد */}
       <aside className="owner-sidebar">
         <div className="owner-logo-section">
           <div className="owner-logo-icon"><Leaf size={24} /></div>
@@ -116,7 +115,6 @@ const StoreInfo = () => {
 
         <div className="info-form-card animate-slide-up">
           <div className="form-content-wrapper">
-            {/* قسم معاينة اللوجو */}
             <div className="logo-edit-section">
               <div className="logo-circle-preview">
                 {storeInfoEdition.logo ? (
@@ -128,8 +126,6 @@ const StoreInfo = () => {
               <h3>Store Logo</h3>
               <p>This is how customers see your brand</p>
             </div>
-
-            {/* الحقول */}
             <div className="inputs-column">
               <div className="eco-input-group">
                 <label>Store Title</label>

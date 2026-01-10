@@ -14,7 +14,7 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* Sidebar Styles */
+
 .owner-sidebar {
     width: 280px;
     background: linear-gradient(180deg, var(--owner-primary) 0%, var(--owner-deep) 100%);
@@ -80,7 +80,7 @@
     cursor: pointer;
 }
 
-/* Main Content Styles */
+
 .owner-main-content {
     flex: 1;
     padding: 2rem;
@@ -109,7 +109,7 @@
     font-weight: 800;
 }
 
-/* Stats & Grid */
+
 .owner-stats-bar {
     display: flex;
     gap: 20px;
@@ -180,7 +180,7 @@
     transform: translateX(5px);
 }
 
-/* Stats Grid */
+
 .owner-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -215,7 +215,7 @@
 .stat-content p { font-size: 13px; color: #64748b; margin: 0; }
 .stat-content h4 { font-size: 1.2rem; font-weight: 800; color: #1e293b; margin: 0; }
 
-/* Layout Extensions */
+
 .dashboard-flex-row {
     display: flex;
     gap: 25px;
@@ -250,13 +250,13 @@
     color: #475569;
 }
 
-/* Table Styles */
+
 .clickable-row { cursor: pointer; transition: 0.2s; }
 .clickable-row:hover { background-color: #f8fafc; }
 .order-id-badge { background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 12px; }
 .price-text { font-weight: 700; color: #059669; }
 
-/* Pagination */
+
 .pagination-controls {
     display: flex;
     align-items: center;
@@ -277,7 +277,7 @@
 .pag-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .pag-btn:hover:not(:disabled) { border-color: #10b981; color: #10b981; }
 
-/* Chart Section */
+
 .chart-list { display: flex; flex-direction: column; gap: 15px; }
 .chart-item { display: flex; align-items: center; gap: 10px; }
 .date-label { font-size: 11px; width: 80px; color: #64748b; }
@@ -285,7 +285,7 @@
 .progress-fill { height: 100%; background: linear-gradient(90deg, #4ade80, #10b981); border-radius: 10px; }
 .revenue-label { font-size: 12px; font-weight: 700; width: 60px; text-align: right; }
 
-/* زر الإضافة الأخضر المميز */
+
 .eco-add-btn {
     display: flex;
     align-items: center;
@@ -306,7 +306,7 @@
     box-shadow: 0 15px 20px -3px rgba(16, 185, 129, 0.4);
 }
 
-/* شبكة المنتجات */
+
 .products-inventory-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -410,7 +410,7 @@
     color: white;
 }
 
-/* حالة عدم وجود بيانات */
+
 .no-data-placeholder {
     grid-column: 1 / -1;
     text-align: center;
@@ -423,7 +423,7 @@
     font-size: 1.1rem;
 }
 
-/* Store Info Specific Styles */
+
 .info-form-card {
     background: white;
     border-radius: 24px;

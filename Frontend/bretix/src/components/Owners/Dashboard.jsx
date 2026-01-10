@@ -6,7 +6,7 @@ import {
   Store, Leaf, TrendingUp, ShoppingBag, 
   BarChart3, Calendar, Filter, ChevronLeft, ChevronRight 
 } from "lucide-react";
-import "./StoreManagement.css"; // نستخدم نفس ملف التنسيق الموحد
+import "./StoreManagement.css"; 
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Dashboard = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-  // التحقق من الصلاحيات
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -27,7 +27,7 @@ const Dashboard = () => {
     else if (parseInt(role) !== 2) navigate("/");
   }, [navigate]);
 
-  // جلب الإحصائيات العامة
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios.get(`http://localhost:5000/stores/${id}/statistic`, {
@@ -37,7 +37,7 @@ const Dashboard = () => {
     .catch((err) => console.log(err));
   }, [id]);
 
-  // جلب بيانات الشارت
+ 
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios.get(`http://localhost:5000/stores/${id}/last-seven-days-chart`, {
@@ -47,7 +47,7 @@ const Dashboard = () => {
     .catch((err) => console.log(err));
   }, [id]);
 
-  // جلب الطلبات مع الفلترة
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const url = fromDate && toDate 
@@ -64,7 +64,7 @@ const Dashboard = () => {
 
   return (
     <div className="owner-dashboard-container">
-      {/* Sidebar الموحد */}
+
       <aside className="owner-sidebar">
         <div className="owner-logo-section">
           <div className="owner-logo-icon"><Leaf size={24} /></div>
@@ -91,7 +91,7 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* كروت الإحصائيات العلوية */}
+  
         <div className="owner-stats-grid">
           <StatCard title="Total Sales" value={`$${stats.totalSales || 0}`} icon={<TrendingUp />} type="emerald" />
           <StatCard title="Orders" value={stats.total_orders || 0} icon={<ShoppingBag />} type="blue" />
@@ -100,7 +100,6 @@ const Dashboard = () => {
         </div>
 
         <div className="dashboard-flex-row">
-          {/* قسم الطلبات الأخيرة */}
           <section className="orders-section">
             <div className="section-card-header">
               <h3>Recent Orders</h3>
@@ -146,7 +145,7 @@ const Dashboard = () => {
             </div>
           </section>
 
-          {/* قسم الشارت البسيط (Last 7 Days) */}
+          
           <section className="chart-section">
             <div className="section-card-header">
               <h3>Revenue (Last 7 Days)</h3>

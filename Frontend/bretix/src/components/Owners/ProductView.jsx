@@ -60,7 +60,7 @@ const ProductView = () => {
   const confirm = async () => {
     const token = localStorage.getItem("token");
 
-    // 1. سؤال المستخدم عن التأكيد
+
     const result = await Swal.fire({
       title: "Save Changes?",
       text: "Are you sure you want to update this product?",
@@ -72,21 +72,21 @@ const ProductView = () => {
       cancelButtonText: "Cancel",
     });
 
-    // 2. إذا كبس "Yes" نبدأ عملية التحميل
+    
     if (result.isConfirmed) {
-      // إظهار بوكس التحميل (Loading)
+   
       Swal.fire({
         title: "Updating...",
         text: "Please wait while we save your changes.",
         allowOutsideClick: false,
         showConfirmButton: false,
         didOpen: () => {
-          Swal.showLoading(); // تشغيل حركة الـ Spinner
+          Swal.showLoading(); 
         },
       });
 
       try {
-        // إرسال الطلب للسيرفر
+ 
         await axios.put(
           `http://localhost:5000/products/${productId}/update`,
           {
@@ -99,7 +99,6 @@ const ProductView = () => {
 
         setProduct(editedProduct);
 
-        // 3. إظهار بوكس النجاح وإغلاق الـ Loading تلقائياً
         Swal.fire({
           title: "Success!",
           text: "Product updated successfully.",
@@ -109,7 +108,6 @@ const ProductView = () => {
         });
       } catch (err) {
         console.log(err);
-        // إظهار بوكس الخطأ في حال فشل الطلب
         Swal.fire({
           title: "Error!",
           text: "Could not update the product.",

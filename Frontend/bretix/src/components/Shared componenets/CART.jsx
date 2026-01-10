@@ -86,7 +86,6 @@ const Cart = () => {
 
   const handleLocationClick = () => {
     setShowLocationModal(true);
-    // Get current location
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {

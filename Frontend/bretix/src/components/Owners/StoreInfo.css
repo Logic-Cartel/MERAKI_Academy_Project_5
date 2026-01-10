@@ -281,7 +281,6 @@
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* قسمين متساويين */
     gap: 30px;
 }
 

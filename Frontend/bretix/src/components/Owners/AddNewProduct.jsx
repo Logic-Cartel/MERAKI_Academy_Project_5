@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "./AddNewProduct.css"; // تأكد من استدعاء ملف الـ CSS
+import "./AddNewProduct.css"; 
 
 const AddNewProduct = () => {
   useEffect(() => {
@@ -74,7 +74,6 @@ const AddNewProduct = () => {
         </p>
 
         <div className="product-grid">
-          {/* كل input داخل group لتنظيم المسافات */}
           <div className="input-group">
             <label>Product Title</label>
             <input

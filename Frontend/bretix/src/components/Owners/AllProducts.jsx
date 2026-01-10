@@ -37,7 +37,6 @@ const AllProducts = () => {
 
   return (
     <div className="owner-dashboard-container">
-      {/* Sidebar الموحد */}
       <aside className="owner-sidebar">
         <div className="owner-logo-section">
           <div className="owner-logo-icon"><Leaf size={24} /></div>
@@ -78,7 +77,7 @@ const AllProducts = () => {
           </button>
         </header>
 
-        {/* شبكة المنتجات */}
+ 
         <div className="products-inventory-grid">
           {storeProducts.length > 0 ? (
             storeProducts.map((product) => (

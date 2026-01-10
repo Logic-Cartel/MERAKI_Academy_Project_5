@@ -10,7 +10,7 @@ import {
   ArrowRightCircle,
   TrendingUp
 } from "lucide-react";
-import "./StoreManagement.css"; // تم تغيير اسم الملف هنا
+import "./StoreManagement.css";
 
 const OwnerStoreManagement = () => {
   const navigate = useNavigate();
@@ -30,7 +30,6 @@ const OwnerStoreManagement = () => {
 
   return (
     <div className="owner-dashboard-container">
-      {/* Sidebar */}
       <aside className="owner-sidebar">
         <div className="owner-logo-section">
           <div className="owner-logo-icon">
@@ -64,8 +63,6 @@ const OwnerStoreManagement = () => {
           </button>
         </div>
       </aside>
-
-      {/* Main Content */}
       <div className="owner-main-content">
         <header className="owner-header">
           <div className="owner-header-info">
