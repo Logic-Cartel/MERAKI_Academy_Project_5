@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { cleareRole, setRole } from "../../redux/roleSlice";
 import { useSelector } from "react-redux";
 
-
 function Login() {
   const dispatch = useDispatch();
 
@@ -33,7 +32,7 @@ function Login() {
       .post("http://localhost:5000/users/login", { email, password })
       .then((result) => {
         console.log(1);
-        
+
         axios
           .get("http://localhost:5000/cart/getCartWhereIsDeletedFalse", {
             headers: {
@@ -41,20 +40,21 @@ function Login() {
             },
           })
           .then((res) => {
-                    console.log(res);
+            console.log(res);
 
             console.log(res.data.items);
-            localStorage.setItem("cartId", res.data.items[0].id);         
-          }).catch((err)=>{
-            console.log(err);           
+            localStorage.setItem("cartId", res.data.items[0].id);
+          })
+          .catch((err) => {
+            console.log(err);
           });
 
         dispatch(setRole(result.data.role));
         localStorage.setItem("token", result.data.token);
         localStorage.setItem("role", result.data.role);
-        localStorage.setItem("role",result.data.role)
-        localStorage.setItem("storeId", result.data.storeId)
-        localStorage.setItem("storeTitle", result.data.storeTitle)
+        localStorage.setItem("role", result.data.role);
+        localStorage.setItem("storeId", result.data.storeId);
+        localStorage.setItem("storeTitle", result.data.storeTitle);
         setToken(result.data.token);
         navigate("/");
       })
@@ -77,6 +77,7 @@ function Login() {
 
         <div className="login-form">
           <input
+            className="email"
             type="email"
             placeholder="Email address"
             value={email}
@@ -84,6 +85,7 @@ function Login() {
           />
 
           <input
+            className="password"
             type="password"
             placeholder="Password"
             value={password}
@@ -101,19 +103,19 @@ function Login() {
           >
             Register here
           </span>
-   <p
-  onClick={() => navigate("/forget-password")}
-  style={{
-    marginTop: "10px",
-    cursor: "pointer",
-    color: "#2d6a4f",
-    fontSize: "14px",
-    textAlign: "right",
-  }}
->
-  Forgot Password?
-</p>
-{message && <div className="success-msg">{message}</div>}
+          <p
+            onClick={() => navigate("/forget-password")}
+            style={{
+              marginTop: "10px",
+              cursor: "pointer",
+              color: "#2d6a4f",
+              fontSize: "14px",
+              textAlign: "right",
+            }}
+          >
+            Forgot Password?
+          </p>
+          {message && <div className="success-msg">{message}</div>}
         </div>
       </div>
     </div>
