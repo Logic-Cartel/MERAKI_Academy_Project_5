@@ -10,10 +10,11 @@ const {
   getCompletedOrders,
 } = require("../controllers/cart");
 const authentication = require("../middlewares/authentication");
+const authorization = require("../middlewares/authorization")
 const cartRouter = express.Router();
 
 //========================
-cartRouter.get("/allcompleted", getCompletedOrders)
+cartRouter.get("/allcompleted", authentication, authorization(1), getCompletedOrders)
 cartRouter.post("/", authentication, addToCart);
 cartRouter.get(
   "/getCartWhereIsDeletedFalse",
@@ -25,7 +26,7 @@ cartRouter.get(
   authentication,
   getCartWhereIsDeletedTure
 );
-cartRouter.get("/totalsales", getTotalSales)
+cartRouter.get("/totalsales",authentication, authorization(1), getTotalSales)
 cartRouter.get("/with-products", authentication, getCartWithProducts);
 cartRouter.patch("/:cartProductId", authentication, updatedQuantity);
 cartRouter.put("/complete/:cartId",authentication, checkoutPayment)

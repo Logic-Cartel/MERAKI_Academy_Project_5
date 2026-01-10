@@ -21,14 +21,13 @@ import {
 const Navbar = () => {
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null); 
+  const dropdownRef = useRef(null);
 
   const role = localStorage.getItem("role");
   const [cartCount, setCartCount] = useState(
     parseInt(localStorage.getItem("cartCount") || "0")
   );
 
- 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -71,13 +70,15 @@ const Navbar = () => {
         >
           <Package size={35} />
         </button>
-        <button
-          className="icon-btn"
-          onClick={() => navigate("/Orders")}
-          title="Orders"
-        >
-          <ClipboardList size={35} />
-        </button>
+        {role && (
+          <button
+            className="icon-btn"
+            onClick={() => navigate("/Orders")}
+            title="Orders"
+          >
+            <ClipboardList size={35} />
+          </button>
+        )}
         <button
           className="icon-btn"
           onClick={() => navigate("/ContactUs")}
@@ -88,7 +89,6 @@ const Navbar = () => {
       </div>
 
       <div className="nav-group right">
-      
         <button
           className="icon-btn cart-wrapper-nav"
           onClick={() => navigate("/cart")}
@@ -99,7 +99,6 @@ const Navbar = () => {
           )}
         </button>
 
-        
         {role === "1" && (
           <button
             className="icon-btn admin-link"
@@ -110,7 +109,6 @@ const Navbar = () => {
           </button>
         )}
 
- 
         <div className="profile-dropdown-wrapper" ref={dropdownRef}>
           <button
             className={`profile-circle-btn ${showDropdown ? "active" : ""}`}
@@ -159,7 +157,7 @@ const Navbar = () => {
                     <div
                       className="dropdown-item"
                       onClick={() => {
-                        navigate("/stores/StoreManagement");
+                        navigate("/ownerstoremanagement");
                         setShowDropdown(false);
                       }}
                     >
@@ -175,7 +173,7 @@ const Navbar = () => {
                       localStorage.clear();
                       navigate("/");
                       setShowDropdown(false);
-                      window.location.reload(); 
+                      window.location.reload();
                     }}
                   >
                     <FaSignOutAlt /> <span>Logout</span>
