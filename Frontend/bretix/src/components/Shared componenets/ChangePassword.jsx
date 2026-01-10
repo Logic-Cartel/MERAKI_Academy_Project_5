@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import "./ChangePassword.css";
 
 function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -10,6 +11,15 @@ function ChangePassword() {
   const [message, setMessage] = useState("");
 
   const token = localStorage.getItem("token");
+
+
+  const renderAnimatedLabel = (text) => {
+    return text.split("").map((letter, index) => (
+      <span key={index} className="char" style={{ "--index": index }}>
+        {letter === " " ? "\u00A0" : letter} 
+      </span>
+    ));
+  };
 
   const submit = () => {
     axios
@@ -27,32 +37,43 @@ function ChangePassword() {
       <h2>Change Password</h2>
 
       <div className="password-input-wrapper">
+
         <input
+          className="input passwordCC" 
           type={showCurrent ? "text" : "password"}
-          placeholder="Current Password"
+          placeholder=" "
+          required
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
         />
-        <span onClick={() => setShowCurrent(!showCurrent)}>
+        <label className="password-input">
+          {renderAnimatedLabel("Current Password")}
+        </label>
+        <span className="eye-icon" onClick={() => setShowCurrent(!showCurrent)}>
           {showCurrent ? <FaEyeSlash /> : <FaEye />}
         </span>
       </div>
 
       <div className="password-input-wrapper">
         <input
+          className="input passwordCC"
           type={showNew ? "text" : "password"}
-          placeholder="New Password"
+          placeholder=" "
+          required
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
-        <span onClick={() => setShowNew(!showNew)}>
+        <label className="password-input">
+          {renderAnimatedLabel("New Password")}
+        </label>
+        <span className="eye-icon" onClick={() => setShowNew(!showNew)}>
           {showNew ? <FaEyeSlash /> : <FaEye />}
         </span>
       </div>
 
-      <button onClick={submit}>Save</button>
+      <button className="save-btn" onClick={submit}>Save</button>
 
-      {message && <p>{message}</p>}
+      {message && <p className="status-msg">{message}</p>}
     </div>
   );
 }
