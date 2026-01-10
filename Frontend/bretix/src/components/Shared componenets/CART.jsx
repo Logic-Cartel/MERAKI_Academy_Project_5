@@ -19,6 +19,8 @@ const Cart = () => {
   const [cartId, setCartId] = useState(null);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState("COD");
+
   const [currentLocation, setCurrentLocation] = useState(null);
   const token = localStorage.getItem("token");
   const [addressData, setAddressData] = useState({});
@@ -81,7 +83,24 @@ const Cart = () => {
       alert("Please select delivery location first!");
       return;
     }
-    navigate("/checkout");
+    if (selectedPayment === "COD") {
+      const cartId = localStorage.getItem("cartId");
+      axios
+        .put(
+          `http://localhost:5000/cart/complete/${cartId}`,
+          { payment_method: "COD" },
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then((res) => {
+          localStorage.setItem(cartId, res.data.newCartId);
+          navigate("/Success");
+        })
+        .catch((err) => {
+          console.log("OrderFailed", err);
+        });
+    } else {
+      navigate("/checkout");
+    }
   };
 
   const handleLocationClick = () => {
@@ -207,33 +226,42 @@ const Cart = () => {
               <span>${total.toFixed(2)}</span>
             </div>
 
-            <div className="payment-options">
-              <p>Payment Method</p>
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  name="payment_method"
-                  value="COD"
-                  defaultChecked
-                />
-                <div className="radio-design">
-                  <Truck size={16} /> Cash on Delivery
-                </div>
-              </label>
-              <label className="radio-label">
-                <input type="radio" name="payment_method" value="Card" />
-                <div className="radio-design">
-                  <CreditCard size={16} /> Pay by card
-                </div>
-              </label>
-            </div>
+          <div className="payment-options">
+  <p>Payment Method</p>
+  <label className="radio-label">
+    <input
+      type="radio"
+      name="payment_method"
+      value="COD"
+      checked={selectedPayment === "COD"}
+      onChange={(e) => setSelectedPayment(e.target.value)}
+    />
+    <div className="radio-design">
+      <Truck size={16} /> Cash on Delivery
+    </div>
+  </label>
 
-            <button className="location-btn" onClick={handleLocationClick}>
-              Insert Location for Delivery
-            </button>
-            <button className="checkout-btn-final" onClick={confirmCheckout}>
-              Confirm Order
-            </button>
+  <label className="radio-label">
+    <input
+      type="radio"
+      name="payment_method"
+      value="Card"
+      checked={selectedPayment === "Card"}
+      onChange={(e) => setSelectedPayment(e.target.value)}
+    />
+    <div className="radio-design">
+      <CreditCard size={16} /> Pay by card
+    </div>
+  </label>
+</div>
+
+<button className="location-btn" onClick={handleLocationClick}>
+  Insert Location for Delivery
+</button>
+
+<button className="checkout-btn-final" onClick={confirmCheckout}>
+  {selectedPayment === "COD" ? "Confirm Order" : "Go to Payment"}
+</button>
           </div>
         </div>
       </div>
