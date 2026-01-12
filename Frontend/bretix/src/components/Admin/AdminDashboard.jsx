@@ -52,7 +52,6 @@ const AdminDashboard = () => {
     { id: "overview", name: "Dashboard", icon: <LayoutDashboard size={20} /> },
     { id: "products", name: "Bretix Products", icon: <Package size={20} /> },
     { id: "users", name: "Users", icon: <Users size={20} /> },
-    { id: "settings", name: "Settings", icon: <Settings size={20} /> },
   ];
 
   const updateUserInfo = () => {
@@ -289,7 +288,7 @@ const AdminDashboard = () => {
         <div className="sidebar-footer">
           <button className="logout-btn" onClick={() => navigate("/")}>
             <LogOut size={18} />
-            <span>Logout</span>
+            <span>Home</span>
           </button>
         </div>
       </aside>
