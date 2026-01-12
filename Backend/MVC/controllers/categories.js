@@ -1,21 +1,37 @@
 const { pool } = require("../models/db");
 
 const addNewCategory = async (req, res) => {
-  const { name, description, imgsrc } = req.body;
+  const { name } = req.body;
+
+  if (!name || name.trim() === "") {
+    return res.status(400).json({
+      success: false,
+      message: "Category name is required",
+    });
+  }
 
   try {
     const result = await pool.query(
-      `INSERT INTO categories (name,description,imgsrc) VALUES ($1,$2,$3) RETURNING *`,
-      [name, description, imgsrc]
+      `INSERT INTO categories (name) VALUES ($1) RETURNING *`,
+      [name.trim()]
     );
+    
     res.status(201).json({
       success: true,
-      result: result.rows,
+      message: "Category added successfully",
+      category: result.rows[0],
     });
   } catch (err) {
+    if (err.code === "23505") {
+      return res.status(409).json({
+        success: false,
+        message: "Category already exists",
+      });
+    }
+    
     res.status(500).json({
       success: false,
-      result: "Server error",
+      message: "Server error",
     });
   }
 };

@@ -1,96 +1,194 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import "./Orders.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-function Orders() {
+const Orders = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [isDeleted, setIsDeleted] = useState(false);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    axios
-      .get(`http://localhost:5000/cart/getCartWhereIsDeletedTure`, {
-        headers: {
-          Authorization: `Bearer ${savedToken}`,
-        },
-      })
-      .then((result) => {
-        
-        setOrders(result.data.items);
-        setIsDeleted(true);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-  }, []);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/Login");
+      return;
+    }
+    fetchOrders();
+  }, [currentPage, navigate]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-500">
-        Loading your orders...
-      </div>
-    );
-  }
+  const fetchOrders = async () => {
+    setLoading(true);
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/cart/my-orders?page=${currentPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setOrders(response.data.orders);
+      setTotalPages(response.data.pagination.totalPages);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="orders-page">
-      <div className="orders-wrapper">
-        <header className="orders-header">
-          <h1>My Orders</h1>
-          <p>Your purchase history</p>
-        </header>
+    <div style={{ maxWidth: "1200px", margin: "40px auto", padding: "0 20px" }}>
+      <h1 style={{ fontSize: "32px", fontWeight: "700", marginBottom: "30px" }}>
+        My Orders
+      </h1>
 
-        {orders.length === 0 ? (
-          <div className="no-orders">
-            <p>No orders found in your history.</p>
+      {loading ? (
+        <div style={{ textAlign: "center", padding: "60px" }}>
+          Loading orders...
+        </div>
+      ) : orders.length === 0 ? (
+        <div style={{ 
+          textAlign: "center", 
+          padding: "60px",
+          background: "#f9fafb",
+          borderRadius: "12px"
+        }}>
+          <p style={{ fontSize: "18px", color: "#6b7280" }}>
+            You haven't placed any orders yet.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div style={{ 
+            background: "white", 
+            borderRadius: "12px", 
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+            overflow: "hidden"
+          }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead style={{ background: "#f9fafb" }}>
+                <tr>
+                  <th style={{ padding: "16px", textAlign: "left", fontWeight: "600", color: "#374151" }}>
+                    Order ID
+                  </th>
+                  <th style={{ padding: "16px", textAlign: "left", fontWeight: "600", color: "#374151" }}>
+                    Date
+                  </th>
+                  <th style={{ padding: "16px", textAlign: "left", fontWeight: "600", color: "#374151" }}>
+                    Items
+                  </th>
+                  <th style={{ padding: "16px", textAlign: "left", fontWeight: "600", color: "#374151" }}>
+                    Total
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr 
+                    key={order.order_id}
+                    style={{ 
+                      borderTop: "1px solid #e5e7eb",
+                      cursor: "pointer"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "#f9fafb"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "white"}
+                  >
+                    <td style={{ padding: "16px" }}>
+                      <span style={{ 
+                        fontWeight: "600", 
+                        color: "#10b981",
+                        fontSize: "14px"
+                      }}>
+                        #{order.order_id}
+                      </span>
+                    </td>
+                    <td style={{ padding: "16px", color: "#6b7280", fontSize: "14px" }}>
+                      {new Date(order.done_at).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td style={{ padding: "16px" }}>
+                      <span style={{ 
+                        display: "inline-block",
+                        padding: "4px 12px",
+                        background: "#f3f4f6",
+                        borderRadius: "12px",
+                        fontSize: "13px",
+                        color: "#6b7280"
+                      }}>
+                        {order.num_of_products} items
+                      </span>
+                    </td>
+                    <td style={{ 
+                      padding: "16px", 
+                      fontWeight: "600", 
+                      color: "#059669",
+                      fontSize: "16px"
+                    }}>
+                      ${parseFloat(order.total).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ) : (
-          <div className="orders-grid-container">
-            <div className="grid-header">
-              <span>Product</span>
-              <span>Order ID</span>
-              <span>Status</span>
-              <span>Total</span>
+
+          {totalPages > 1 && (
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "center", 
+              alignItems: "center", 
+              gap: "12px",
+              marginTop: "30px"
+            }}>
+              <button
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                style={{
+                  padding: "10px 20px",
+                  background: currentPage === 1 ? "#e5e7eb" : "white",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "8px",
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                  fontWeight: "500",
+                  color: "#374151",
+                }}
+              >
+                Previous
+              </button>
+
+              <span style={{ color: "#6b7280", fontSize: "14px" }}>
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: "10px 20px",
+                  background: currentPage === totalPages ? "#e5e7eb" : "white",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "8px",
+                  cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                  fontWeight: "500",
+                  color: "#374151",
+                }}
+              >
+                Next
+              </button>
             </div>
-
-            {orders.map((item, i) => (
-              <div key={i} className="order-item-card">
-                <div className="product-column">
-                  <div className="product-img-box">
-                    <img
-                      src={item.imgsrc || "placeholder.png"}
-                      alt={item.title}
-                    />
-                  </div>
-                  <div className="product-info">
-                    <h3>{item.title || "Sustainable Product"}</h3>
-                    <span>Qty: {item.quantity || 1}</span>
-                  </div>
-                </div>
-
-                <div className="order-id-column">
-                  <span className="label">Order ID:</span>
-                  <span className="value">
-                    #ORD-{item.cart_id || i + 100}
-                  </span>
-                </div>
-
-                <div className="status-column">
-                  <span className="status-tag">Completed</span>
-                </div>
-
-                <div className="price-column">
-                  <span className="price-value">{item.price} JOD</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+          )}
+        </>
+      )}
     </div>
   );
-}
+};
 
 export default Orders;
