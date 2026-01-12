@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
-  LayoutDashboard,
-  Users,
-  Package,
-  Settings,
-  LogOut,
-  TrendingUp,
-  Leaf,
-  ShieldCheck,
-  CheckCircle,
-  Calendar,
+  LayoutDashboard,
+  Users,
+  Package,
+  Settings,
+  LogOut,
+  TrendingUp,
+  Leaf,
+  ShieldCheck,
+  CheckCircle,
+  Calendar,
 } from "lucide-react";
 import axios from "axios";
 import "./AdminDashboard.css";
@@ -36,6 +36,10 @@ const AdminDashboard = () => {
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [showAddCategoryForm, setShowAddCategoryForm] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [stores, setStores] = useState([]);
 
   const [usersEdit, setUsersEdit] = useState({});
   const [showEditForm, setShowEditForm] = useState(false);
@@ -107,6 +111,37 @@ const AdminDashboard = () => {
       .catch((err) => console.log(err));
   };
 
+  const addCategory = () => {
+    if (!newCategoryName.trim()) {
+      alert("Please enter category name");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    axios
+      .post(
+        `http://localhost:5000/categories/add`,
+        { name: newCategoryName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((result) => {
+        setCategories([...categories, result.data.category]);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3000);
+        setShowAddCategoryForm(false);
+        setNewCategoryName("");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert(err.response?.data?.message || "Error adding category");
+      });
+  };
+
   const fetchCompletedOrders = async () => {
     setIsLoadingOrders(true);
     const token = localStorage.getItem("token");
@@ -136,6 +171,30 @@ const AdminDashboard = () => {
       setIsLoadingOrders(false);
     }
   };
+
+  useEffect(() => {
+    axios.get(`http://localhost:5000/users/`).then((result) => {
+      setUsers(result.data.result || []);
+    });
+
+    axios.get(`http://localhost:5000/products/all`).then((result) => {
+      setProducts(result.data.products || []);
+    });
+
+    axios
+      .get(`http://localhost:5000/stores/all`)
+      .then((result) => {
+        setStores(result.data.result || []);
+      })
+      .catch((err) => console.log(err));
+
+    axios
+      .get(`http://localhost:5000/categories/all`)
+      .then((result) => {
+        setCategories(result.data.categories || []);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     axios.get(`http://localhost:5000/users/`).then((result) => {
@@ -310,12 +369,21 @@ const AdminDashboard = () => {
                   <h3>Eco-Products Catalog</h3>
                   <p className="subtitle">Manage your sustainable inventory</p>
                 </div>
-                <button
-                  className={`add-product-btn ${showAddForm ? "close" : ""}`}
-                  onClick={() => setShowAddForm(!showAddForm)}
-                >
-                  {showAddForm ? "Close Form" : "+ Add New Product"}
-                </button>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <button
+                    className={`add-product-btn ${showAddForm ? "close" : ""}`}
+                    onClick={() => setShowAddForm(!showAddForm)}
+                  >
+                    {showAddForm ? "Close Form" : "+ Add New Product"}
+                  </button>
+                  <button
+                    className="add-product-btn"
+                    onClick={() => setShowAddCategoryForm(true)}
+                    style={{ background: "#8b5cf6" }}
+                  >
+                    + Add Category
+                  </button>
+                </div>
               </div>
 
               {showAddForm && (
@@ -362,20 +430,50 @@ const AdminDashboard = () => {
                       />
                     </div>
                     <div className="input-field">
-                      <label>Category ID</label>
-                      <input
-                        type="text"
+                      <label>Category</label>
+                      <select
                         value={categories_id}
                         onChange={(e) => setCategories_id(e.target.value)}
-                      />
+                        style={{
+                          width: "100%",
+                          padding: "12px",
+                          border: "1px solid #d1d5db",
+                          borderRadius: "8px",
+                          fontSize: "15px",
+                          background: "white",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <option value="">Select Category</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div className="input-field full-row">
-                      <label>Store ID</label>
-                      <input
-                        type="text"
+                      <label>Store</label>
+                      <select
                         value={store_id}
                         onChange={(e) => setStore_id(e.target.value)}
-                      />
+                        style={{
+                          width: "100%",
+                          padding: "12px",
+                          border: "1px solid #d1d5db",
+                          borderRadius: "8px",
+                          fontSize: "15px",
+                          background: "white",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <option value="">Select Store</option>
+                        {stores.map((store) => (
+                          <option key={store.id} value={store.id}>
+                            {store.title}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <button
@@ -753,31 +851,109 @@ const AdminDashboard = () => {
       </div>
 
       {showToast && (
-        <div className="eco-toast-box">
-          <div className="toast-icon">
-            <CheckCircle size={24} color="#10b981" />
-          </div>
-          <div className="toast-message">
-            <h4>Success!</h4>
-            <p>Action completed successfully.</p>
-          </div>
+  <div className="eco-toast-box">
+    <div className="toast-icon">
+      <CheckCircle size={24} color="#10b981" />
+    </div>
+    <div className="toast-message">
+      <h4>Success!</h4>
+      <p>Action completed successfully.</p>
+    </div>
+  </div>
+)}
+
+{showAddCategoryForm && (
+  <div className="modal-overlay animate-fade-in">
+    <div className="modal-content animate-slide-up" style={{ maxWidth: "500px" }}>
+      <div className="modal-header">
+        <div className="modal-title-box">
+          <h3>Add New Category</h3>
         </div>
-      )}
+        <button
+          className="close-modal-btn"
+          onClick={() => {
+            setShowAddCategoryForm(false);
+            setNewCategoryName("");
+          }}
+        >
+          ✕
+        </button>
+      </div>
+
+      <div className="modal-body">
+        <div className="input-field-premium">
+          <label>Category Name</label>
+          <input
+            type="text"
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+            placeholder="Enter category name"
+            style={{
+              width: "100%",
+              padding: "12px",
+              border: "1px solid #d1d5db",
+              borderRadius: "8px",
+              fontSize: "15px"
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="modal-footer">
+        <button 
+          className="cancel-btn" 
+          onClick={() => {
+            setShowAddCategoryForm(false);
+            setNewCategoryName("");
+          }}
+          style={{
+            padding: "10px 20px",
+            background: "#e5e7eb",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            marginRight: "10px"
+          }}
+        >
+          Cancel
+        </button>
+        <button 
+          className="submit-btn-eco" 
+          onClick={addCategory}
+          style={{
+            padding: "10px 20px",
+            background: "#10b981",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer"
+          }}
+        >
+          Add Category
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
 
 const StatCard = ({ title, value, change, icon, type }) => (
-  <div className={`stat-card ${type}`}>
-    <div className="stat-header">
-      <div className="stat-icon-wrapper">{icon}</div>
-      <span className="stat-change">{change}</span>
-    </div>
-    <div className="stat-info">
-      <p className="stat-label">{title}</p>
-      <p className="stat-value">{value}</p>
-    </div>
-  </div>
+  <div className={`stat-card ${type}`}>
+       {" "}
+    <div className="stat-header">
+            <div className="stat-icon-wrapper">{icon}</div>     {" "}
+      <span className="stat-change">{change}</span>   {" "}
+    </div>
+       {" "}
+    <div className="stat-info">
+            <p className="stat-label">{title}</p>     {" "}
+      <p className="stat-value">{value}</p>   {" "}
+    </div>
+     {" "}
+  </div>
 );
 
 export default AdminDashboard;
