@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
-  LayoutDashboard,
-  Users,
-  Package,
-  Settings,
-  LogOut,
-  TrendingUp,
-  Leaf,
-  ShieldCheck,
-  CheckCircle,
-  Calendar,
+  LayoutDashboard,
+  Users,
+  Package,
+  Settings,
+  LogOut,
+  TrendingUp,
+  Leaf,
+  ShieldCheck,
+  CheckCircle,
+  Calendar,
 } from "lucide-react";
 import axios from "axios";
 import "./AdminDashboard.css";
@@ -768,16 +768,16 @@ const AdminDashboard = () => {
 };
 
 const StatCard = ({ title, value, change, icon, type }) => (
-  <div className={`stat-card ${type}`}>
-    <div className="stat-header">
-      <div className="stat-icon-wrapper">{icon}</div>
-      <span className="stat-change">{change}</span>
-    </div>
-    <div className="stat-info">
-      <p className="stat-label">{title}</p>
-      <p className="stat-value">{value}</p>
-    </div>
-  </div>
+  <div className={`stat-card ${type}`}>
+    <div className="stat-header">
+      <div className="stat-icon-wrapper">{icon}</div>
+      <span className="stat-change">{change}</span>
+    </div>
+    <div className="stat-info">
+      <p className="stat-label">{title}</p>
+      <p className="stat-value">{value}</p>
+    </div>
+  </div>
 );
 
 export default AdminDashboard;
