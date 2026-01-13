@@ -30,6 +30,7 @@ const ProductDetails = () => {
         setLoading(false);
       });
   }, [id]);
+console.log(product);
 
   const addToCart = async () => {
     const token = localStorage.getItem("token");

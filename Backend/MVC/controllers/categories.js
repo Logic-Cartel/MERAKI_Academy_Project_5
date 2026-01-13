@@ -1,7 +1,7 @@
 const { pool } = require("../models/db");
 
 const addNewCategory = async (req, res) => {
-  const { name } = req.body;
+  const { name,description } = req.body;
 
   if (!name || name.trim() === "") {
     return res.status(400).json({
@@ -12,8 +12,8 @@ const addNewCategory = async (req, res) => {
 
   try {
     const result = await pool.query(
-      `INSERT INTO categories (name) VALUES ($1) RETURNING *`,
-      [name.trim()]
+      `INSERT INTO categories (name,description) VALUES ($1,$2) RETURNING *`,
+      [name.trim(),description]
     );
     
     res.status(201).json({
@@ -22,7 +22,9 @@ const addNewCategory = async (req, res) => {
       category: result.rows[0],
     });
   } catch (err) {
-    if (err.code === "23505") {
+    console.log(err.message);
+    
+    if (err) {
       return res.status(409).json({
         success: false,
         message: "Category already exists",
