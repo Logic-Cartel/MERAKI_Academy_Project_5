@@ -13,7 +13,7 @@
 
 **Logic Cartel**
 
-- **Ahmad Mahmoud Al Hyari** - Full Stack Developer
+- **Ahmad Mahmoud AlHyari** - Full Stack Developer
 - **Ahmad Sameer AlBorno** - Full Stack Developer  
 - **Mahmoud Mohammed Atef ALshiekh Qasem** - Full Stack Developer
 
@@ -109,7 +109,7 @@ cp .env.example .env
 Edit `.env`:
 ```env
 VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=https://meraki-academy-project-5-bn67.onrender.com
 ```
 
 Start frontend:
@@ -117,23 +117,9 @@ Start frontend:
 npm run dev
 ```
 
-**4. Database Setup**
-
-Create database:
-```sql
-CREATE DATABASE bretix;
-```
-
-The database schema includes multiple tables with various relationship types:
-- **One-to-Many:** Users → Store, Store → Products
-- **Many-to-Many:** Users ↔ Stores (via Favourites), Cart ↔ Products
-- **One-to-One:** Store Owner → Store
-
-Run the schema file to create all necessary tables and relationships.
-
-**5. Access the Application**
+**4. Access the Application**
 - **Frontend:** http://localhost:5173
-- **Backend API:** http://localhost:5000
+- **Backend API:** https://meraki-academy-project-5-bn67.onrender.com
 
 ---
 
@@ -156,10 +142,8 @@ Run the schema file to create all necessary tables and relationships.
 - **Stripe.js** - Secure payment forms
 - **Lucide React** - Beautiful icons
 - **SweetAlert2** - Enhanced user notifications
-- **Bootstrap** - Utilized for responsive grid and layout styling
-- **Material-UI** - Implemented for advanced, ready-to-use UI components
-
-
+- **Bootstrap** - Responsive grid and layout styling
+- **Material-UI** - Advanced UI components
 
 ---
 
@@ -200,23 +184,195 @@ MERAKI_Academy_Project_5/
 
 ---
 
-## 🗄️ Database Architecture
+## 🗄️ Database Architecture & Setup
 
-The platform uses PostgreSQL with a sophisticated relational schema:
+The platform uses **PostgreSQL** (hosted on Neon) with a sophisticated relational schema featuring 10 tables and 12 relationships.
+
+### Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    users ||--o| store : "owns"
+    users ||--o{ cart : "has"
+    users }o--o{ store : "favourites"
+    store ||--o{ products : "sells"
+    categories ||--o{ products : "contains"
+    cart ||--o{ cart_products : "contains"
+    products ||--o{ cart_products : "in"
+    role ||--o{ users : "has"
+    role ||--o{ role_permission : "has"
+    permission ||--o{ role_permission : "has"
+
+    users {
+        int id PK
+        string firstname
+        string lastname
+        string email UK
+        string password
+        int role_id FK
+        boolean is_deleted
+        string email_verification_code
+    }
+
+    store {
+        int id PK
+        string title
+        int owner_id FK
+        string logo
+        string description
+    }
+
+    products {
+        int id PK
+        string imgsrc
+        string title
+        string description
+        int price
+        int rate
+        int categories_id FK
+        int store_id FK
+    }
+
+    categories {
+        int id PK
+        string name
+        string description
+        string imgsrc
+    }
+
+    cart {
+        int id PK
+        int users_id FK
+        boolean is_deleted
+        timestamp done_at
+    }
+
+    cart_products {
+        int id PK
+        int product FK
+        int quantity
+        int cart FK
+    }
+
+    favourites {
+        int id PK
+        int user_id FK
+        int store_id FK
+        timestamp created_at
+    }
+
+    role {
+        int role_id PK
+        string role
+    }
+
+    permission {
+        int permission_id PK
+        string permission
+    }
+
+    role_permission {
+        int id PK
+        int role_id FK
+        int permission_id FK
+    }
+```
 
 ### Core Tables
-- `users` - Customer, owner, and admin accounts
-- `store` - Store information and branding
-- `products` - Product catalog with store associations
-- `categories` - Product categorization
-- `cart` & `cart_products` - Shopping cart system
-- `favourites` - User's saved stores (Many-to-Many)
 
-### Relationship Types
-- **One-to-Many:** Owner → Store, Store → Products, Category → Products
-- **Many-to-Many:** Users ↔ Stores (favourites), Cart ↔ Products
-- **Foreign Keys:** Ensure referential integrity across all tables
-- **Cascade Deletes:** Automatic cleanup of dependent records
+#### **users** - User Accounts
+- **Primary Key:** `id`
+- **Fields:** firstname, lastname, email (unique), password, role_id, is_deleted, email_verification_code
+- **Relationships:** 
+  - One-to-Many with cart
+  - One-to-One with store (as owner)
+  - Many-to-Many with store (via favourites)
+
+#### **store** - Store Information
+- **Primary Key:** `id`
+- **Foreign Key:** `owner_id` → users(id)
+- **Fields:** title, logo, description
+- **Relationships:** 
+  - Belongs to one user (owner)
+  - One-to-Many with products
+  - Many-to-Many with users (via favourites)
+
+#### **products** - Product Catalog
+- **Primary Key:** `id`
+- **Foreign Keys:** 
+  - `store_id` → store(id)
+  - `categories_id` → categories(id)
+- **Fields:** imgsrc, title, description, price, rate
+- **Relationships:** 
+  - Belongs to one store
+  - Belongs to one category
+  - Many-to-Many with cart (via cart_products)
+
+#### **categories** - Product Categories
+- **Primary Key:** `id`
+- **Fields:** name, description, imgsrc
+- **Relationships:** One-to-Many with products
+
+#### **cart** - Shopping Carts
+- **Primary Key:** `id`
+- **Foreign Key:** `users_id` → users(id)
+- **Fields:** is_deleted, done_at
+- **Relationships:** Many-to-Many with products (via cart_products)
+
+#### **cart_products** - Cart Items Junction
+- **Primary Key:** `id`
+- **Foreign Keys:** 
+  - `product` → products(id)
+  - `cart` → cart(id)
+- **Fields:** quantity
+- **Purpose:** Junction table linking carts to products (Many-to-Many)
+
+#### **favourites** - User's Favourite Stores Junction
+- **Primary Key:** `id`
+- **Foreign Keys:** 
+  - `user_id` → users(id) ON DELETE CASCADE
+  - `store_id` → store(id) ON DELETE CASCADE
+- **Fields:** created_at
+- **Constraints:** UNIQUE(user_id, store_id)
+- **Purpose:** Junction table linking users to favourite stores (Many-to-Many)
+- **Special:** CASCADE DELETE on both foreign keys, preventing duplicate favourites
+
+### Relationship Summary
+
+**One-to-Many Relationships:**
+- users → store (one owner, one store)
+- users → cart (one user, multiple carts)
+- store → products (one store, many products)
+- categories → products (one category, many products)
+- role → users (one role, many users)
+
+**Many-to-Many Relationships:**
+- users ↔ stores (via favourites) - Users can favourite multiple stores
+- cart ↔ products (via cart_products) - Cart can contain multiple products
+- role ↔ permission (via role_permission) - Roles can have multiple permissions
+
+**Special Constraints:**
+- **CASCADE DELETE:** Deleting user/store removes all favourites automatically
+- **UNIQUE:** Users cannot favourite the same store twice
+- **NOT NULL:** All foreign keys and critical fields enforced
+
+### Database Setup
+
+**Local Development:**
+```sql
+-- 1. Create database
+CREATE DATABASE bretix;
+
+-- 2. Create tables in order (respecting dependencies)
+-- See schema file for complete SQL
+```
+
+**Production:**
+- **Hosting:** Neon PostgreSQL with serverless scaling
+- **Features:** Automatic backups, connection pooling, SSL encryption
+- **Connection:** Uses environment variable `DB_URL`
+
+Run the database schema file to create all necessary tables and relationships with proper foreign key constraints.
 
 ---
 
@@ -332,12 +488,12 @@ Bretix uses **Stripe** for secure payment processing.
 
 ## 🚀 Deployment
 
-**Status:** Deployment in progress (expected within 2 days)
+**Status:** Deployment in progress
 
 The application will be deployed using:
-- **Frontend:** Vercel or Netlify
-- **Backend:** Render or Railway
-- **Database:** Neon or Supabase PostgreSQL
+- **Frontend:** Vercel
+- **Backend:** Render
+- **Database:** Neon PostgreSQL
 
 Live URL will be added upon deployment completion.
 
@@ -402,7 +558,7 @@ Our goal isn't just to build another e-commerce platform - we aim to solve real 
 ## 📞 Contact & Support
 
 ### Team Members
-- Ahmad Mahmoud Al Hyari
+- Ahmad Mahmoud AlHyari
 - Ahmad Sameer AlBorno
 - Mahmoud Mohammed Atef ALshiekh Qasem
 
