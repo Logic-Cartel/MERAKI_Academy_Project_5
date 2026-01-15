@@ -137,67 +137,53 @@ const login = (req, res) => {
   });
 };
 //================ForgetPassword================
-const requestForgotPassword = (req, res) => {
+const requestForgotPassword = async (req, res) => {
   const { email } = req.body;
 
-  pool
-    .query("SELECT * FROM users WHERE email=$1", [email])
-    .then((result) => {
-      if (result.rows.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Email not found",
-        });
-      }
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE email=$1", [email]);
 
-      const token = jwt.sign({ email }, process.env.SECRET, {
-        expiresIn: "15m",
-      });
-
-      const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      transporter.sendMail(
-        {
-          from: process.env.EMAIL_USER,
-          to: email,
-          subject: "Reset Password",
-          html: `
-          <h3>Reset your password</h3>
-          <p>Click the link below:</p>
-          <a href="${resetLink}">${resetLink}</a>
-          <p>This link expires in 15 minutes</p>
-        `,
-        },
-        (err, info) => {
-          if (err) {
-            return res.status(500).json({
-              success: false,
-              message: "Failed to send email",
-              error: err.message,
-            });
-          } else {
-            return res.status(200).json({
-              success: true,
-              message: "Reset link sent to your email",
-            });
-          }
-        }
-      );
-    })
-    .catch((err) => {
-      res.status(500).json({
+    if (result.rows.length === 0) {
+      return res.status(404).json({
         success: false,
-        message: "Server error",
-        error: err.message,
+        message: "Email not found",
       });
+    }
+
+    if (!process.env.SECRET) throw new Error("SECRET is missing in Env variables");
+    
+    const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: "15m" });
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Reset Password",
+      html: `<h3>Reset your password</h3><p>Click: <a href="${resetLink}">${resetLink}</a></p>`,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Reset link sent to your email",
+    });
+
+  } catch (err) {
+    console.error("FULL ERROR LOG:", err); 
+    
+    return res.status(500).json({
+      success: false,
+      message: "Server internal error",
+      error: err.message, 
+    });
+  }
 };
 const resetPassword = (req, res) => {
   const { token, newPassword } = req.body;
