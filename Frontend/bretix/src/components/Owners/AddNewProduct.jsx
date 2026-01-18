@@ -21,7 +21,6 @@ const AddNewProduct = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [rate, setRate] = useState("");
   const [categories_id, setCategories_id] = useState("");
   const [store_id, setStore_id] = useState(id);
   const [allCategories, setAllCategories] = useState([])
@@ -45,8 +44,8 @@ const AddNewProduct = () => {
       title,
       description,
       price,
-      rate,
-      categories_id,
+      rate:0,
+      categories_id, 
     };
     try {
       await axios.post(
@@ -119,14 +118,6 @@ const AddNewProduct = () => {
             />
           </div>
 
-          <div className="input-group">
-            <label>Initial Rate (1-5)</label>
-            <input
-              type="number"
-              placeholder="5"
-              onChange={(e) => setRate(e.target.value)}
-            />
-          </div>
         </div>
 
         <button className="add-btn" onClick={confirm}>

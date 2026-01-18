@@ -1,5 +1,5 @@
-const nodemailer = require("nodemailer");
-const sendgrid = require("@sendgrid/mail")
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { pool } = require("../models/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -151,24 +151,51 @@ const requestForgotPassword = async (req, res) => {
       });
     }
 
-    if (!process.env.SECRET) throw new Error("SECRET is missing in Env variables");
-    
-    const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: "15m" });
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+      const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+      
+      // SendGrid Email
+      const msg = {
+        to: email,
+        from: 'm.alshiekhqasem@gmail.com',
+        subject: 'Reset Password - Bretix',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #10b981;">Reset Your Password</h2>
+            <p>You requested to reset your password. Click the button below to proceed:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetLink}" 
+                 style="background-color: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                Reset Password
+              </a>
+            </div>
+            <p style="color: #666; font-size: 14px;">This link expires in 15 minutes.</p>
+            <p style="color: #666; font-size: 14px;">If you didn't request this, please ignore this email.</p>
+          </div>
+        `
+      };
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Reset Password",
-      html: `<h3>Reset your password</h3><p>Click: <a href="${resetLink}">${resetLink}</a></p>`,
+      sgMail.send(msg)
+        .then(() => {
+          res.status(200).json({
+            success: true,
+            message: "Reset link sent to your email",
+          });
+        })
+        .catch((err) => {
+          console.log("FULL ERROR LOG:", err);
+          res.status(500).json({
+            success: false,
+            message: "Failed to send email",
+            error: err.message,
+          });
+        });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: "Server error",
+        error: err.message,
+      });
     });
 
     return res.status(200).json({
@@ -186,6 +213,7 @@ const requestForgotPassword = async (req, res) => {
     });
   }
 };
+
 const resetPassword = (req, res) => {
   const { token, newPassword } = req.body;
 
@@ -285,13 +313,6 @@ const updateMyProfile = (req, res) => {
     });
 };
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
 const requestEmailChange = async (req, res) => {
   try {
@@ -330,18 +351,33 @@ const requestEmailChange = async (req, res) => {
       [newEmail, code, userId]
     );
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    // SendGrid Email
+    const msg = {
       to: newEmail,
-      subject: "Verify your new email",
-      html: `<h3>Your verification code</h3><h2>${code}</h2>`,
-    });
+      from: 'm.alshiekhqasem@gmail.com',
+      subject: 'Email Verification - Bretix',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #10b981;">Verify Your Email</h2>
+          <p>Enter this code to verify your new email address:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #10b981;">
+              ${code}
+            </div>
+          </div>
+          <p style="color: #666; font-size: 14px;">This code expires in 15 minutes.</p>
+        </div>
+      `
+    };
+
+    await sgMail.send(msg);
 
     res.json({
       success: true,
       message: "Verification code sent to new email",
     });
   } catch (error) {
+    console.log("Email error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
