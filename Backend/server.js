@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const axios = require("axios"); 
+const axios = require("axios");
 require("dotenv").config();
 const db = require("./MVC/models/db");
 const cartRouter = require("./MVC/routes/cart");
@@ -11,9 +11,19 @@ const productsRouter = require("./MVC/routes/products");
 const storesRouter = require("./MVC/routes/stores");
 
 const app = express();
-const PORT = process.env.PORT || 5000; 
+const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// ⚡ Handle CORS for Netlify + OPTIONS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://aesthetic-dango-b61ce6.netlify.app");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json());
 
 app.use("/users", usersRouter);
