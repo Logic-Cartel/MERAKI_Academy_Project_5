@@ -138,22 +138,18 @@ const login = (req, res) => {
   });
 };
 //================ForgetPassword================
-const requestForgotPassword = (req, res) => {
+const requestForgotPassword = async (req, res) => {
   const { email } = req.body;
 
-  pool
-    .query("SELECT * FROM users WHERE email=$1", [email])
-    .then((result) => {
-      if (result.rows.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Email not found",
-        });
-      }
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE email=$1", [email]);
 
-      const token = jwt.sign({ email }, process.env.SECRET, {
-        expiresIn: "15m",
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Email not found",
       });
+    }
 
       const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
       
@@ -201,6 +197,21 @@ const requestForgotPassword = (req, res) => {
         error: err.message,
       });
     });
+
+    return res.status(200).json({
+      success: true,
+      message: "Reset link sent to your email",
+    });
+
+  } catch (err) {
+    console.error("FULL ERROR LOG:", err); 
+    
+    return res.status(500).json({
+      success: false,
+      message: "Server internal error",
+      error: err.message, 
+    });
+  }
 };
 
 const resetPassword = (req, res) => {
