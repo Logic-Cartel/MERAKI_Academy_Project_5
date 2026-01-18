@@ -327,13 +327,15 @@ login-btn {
     padding: 0 5px;
     cursor: pointer;
     overflow: visible;
+    
 }
 
 
 .navbar-custom-img {
 
-    height: 60px !important;
+    height: 110px !important;
     width: auto;
+
 
 
     transform: scale(1.2);
