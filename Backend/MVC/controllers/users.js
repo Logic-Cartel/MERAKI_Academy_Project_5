@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const sendgrid = require("@sendgrid/mail")
 const { pool } = require("../models/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
