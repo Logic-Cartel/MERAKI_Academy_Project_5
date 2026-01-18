@@ -188,8 +188,7 @@ const requestForgotPassword = async (req, res) => {
             message: "Failed to send email",
             error: err.message,
           });
-        });
-    })
+        })
     .catch((err) => {
       res.status(500).json({
         success: false,
