@@ -23,9 +23,7 @@ function ResetPassword() {
         }, 2000);
       })
       .catch((err) => {
-        setMessage(
-          err.response?.data?.message || "Something went wrong"
-        );
+        setMessage(err.response?.data?.message || "Something went wrong");
       });
   };
 
