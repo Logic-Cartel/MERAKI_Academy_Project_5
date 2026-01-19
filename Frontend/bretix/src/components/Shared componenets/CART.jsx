@@ -41,7 +41,7 @@ const Cart = () => {
 
   useEffect(() => {
     axios
-      .get("https://meraki-academy-project-5-bn67.onrender.com/cart/with-products", {
+      .get("http://localhost:5000/cart/with-products", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -61,7 +61,7 @@ const Cart = () => {
     const token = localStorage.getItem("token");
     axios
       .patch(
-        `https://meraki-academy-project-5-bn67.onrender.com/cart/${cartProductId}`,
+        `http://localhost:5000/cart/${cartProductId}`,
         { quantity: newQuantity },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -99,7 +99,7 @@ const Cart = () => {
       const cartId = localStorage.getItem("cartId");
       axios
         .put(
-          `https://meraki-academy-project-5-bn67.onrender.com/cart/complete/${cartId}`,
+          `http://localhost:5000/cart/complete/${cartId}`,
           { payment_method: "COD" },
           { headers: { Authorization: `Bearer ${token}` } }
         )

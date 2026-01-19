@@ -109,7 +109,7 @@ cp .env.example .env
 Edit `.env`:
 ```env
 VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
-VITE_API_URL=https://meraki-academy-project-5-bn67.onrender.com
+VITE_API_URL=http://localhost:5000
 ```
 
 Start frontend:
@@ -119,7 +119,7 @@ npm run dev
 
 **4. Access the Application**
 - **Frontend:** http://localhost:5173
-- **Backend API:** https://meraki-academy-project-5-bn67.onrender.com
+- **Backend API:** http://localhost:5000
 
 ---
 
