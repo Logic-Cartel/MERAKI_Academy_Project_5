@@ -55,7 +55,7 @@ const token = localStorage.getItem("token");
     if (!token) return;
 
     axios
-      .get("https://meraki-academy-project-5-bn67.onrender.com/users/profile", {
+      .get("http://localhost:5000/users/profile", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {

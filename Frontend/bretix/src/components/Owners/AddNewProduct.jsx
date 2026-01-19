@@ -28,7 +28,7 @@ const AddNewProduct = () => {
   useEffect(()=>{
     const getCategories = async ()=>{
       try{
-        const result = await axios.get(`https://meraki-academy-project-5-bn67.onrender.com/categories/`)
+        const result = await axios.get(`http://localhost:5000/categories/`)
         setAllCategories(result.data.categories)
       }catch(err){console.log(err);
       }
@@ -49,7 +49,7 @@ const AddNewProduct = () => {
     };
     try {
       await axios.post(
-        "https://meraki-academy-project-5-bn67.onrender.com/stores/addnewproductinstore",
+        "http://localhost:5000/stores/addnewproductinstore",
         {
           ...newProductData,
           store_id,

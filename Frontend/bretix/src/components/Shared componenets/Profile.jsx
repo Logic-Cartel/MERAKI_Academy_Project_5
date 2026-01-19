@@ -27,7 +27,7 @@ function Profile() {
     if (!token) return;
 
     axios
-      .get("https://meraki-academy-project-5-bn67.onrender.com/users/profile", {
+      .get("http://localhost:5000/users/profile", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -57,7 +57,7 @@ function Profile() {
   const updateProfile = () => {
     axios
       .put(
-        "https://meraki-academy-project-5-bn67.onrender.com/users/profile",
+        "http://localhost:5000/users/profile",
         {
           ...user,
           email: newEmail,
@@ -74,7 +74,7 @@ function Profile() {
   const sendVerificationCode = async () => {
     try {
       await axios.post(
-        "https://meraki-academy-project-5-bn67.onrender.com/users/request-email-change",
+        "http://localhost:5000/users/request-email-change",
         { newEmail: newEmail.trim() },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -92,7 +92,7 @@ function Profile() {
     try {
       const trimmedCode = verificationCode.trim();
       await axios.put(
-        "https://meraki-academy-project-5-bn67.onrender.com/users/verify-email-change",
+        "http://localhost:5000/users/verify-email-change",
         { code: trimmedCode },
         { headers: { Authorization: `Bearer ${token}` } }
       );

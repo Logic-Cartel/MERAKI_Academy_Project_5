@@ -14,13 +14,25 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ⚡ Handle CORS for Netlify + OPTIONS
+// ⚡ Handle CORS for Netlify + localhost
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://aesthetic-dango-b61ce6.netlify.app");
+  const allowedOrigins = [
+    "https://aesthetic-dango-b61ce6.netlify.app",
+    "http://localhost:5173",
+  ];
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
   }
+
   next();
 });
 

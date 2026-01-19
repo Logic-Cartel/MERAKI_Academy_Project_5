@@ -24,7 +24,7 @@ function ChangePassword() {
   const submit = () => {
     axios
       .put(
-        "https://meraki-academy-project-5-bn67.onrender.com/users/change-password",
+        "http://localhost:5000/users/change-password",
         { currentPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       )

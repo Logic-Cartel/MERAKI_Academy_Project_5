@@ -23,7 +23,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("https://meraki-academy-project-5-bn67.onrender.com/products/top10")
+      .get("http://localhost:5000/products/top10")
       .then((res) => {
         setTop10Products(res.data.result);
       })
@@ -83,7 +83,7 @@ const Home = () => {
 
     axios
       .post(
-        "https://meraki-academy-project-5-bn67.onrender.com/cart",
+        "http://localhost:5000/cart",
         {
           products_id: product.id,
           quantity: 1,
