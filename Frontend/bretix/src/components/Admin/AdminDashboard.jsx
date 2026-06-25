@@ -15,7 +15,7 @@ import axios from "axios";
 import "./AdminDashboard.css";
 import "./AddnewProducts.css";
 import { useNavigate } from "react-router-dom";
-
+import API_URL from "../../config/api";
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
@@ -66,15 +66,12 @@ const AdminDashboard = () => {
     console.log(usersEdit);
 
     axios
-      .put(
-        `http://localhost:5000/users/update/admin/${usersEdit.id}`,
-        usersEdit
-      )
+      .put(`${API_URL}/users/update/admin/${usersEdit.id}`, usersEdit)
       .then((result) => {
         console.log(result);
 
         const updatedUsers = users.map((u) =>
-          u.id === usersEdit.id ? { ...u, ...usersEdit } : u
+          u.id === usersEdit.id ? { ...u, ...usersEdit } : u,
         );
         setUsers(updatedUsers);
         setShowEditForm(false);
@@ -97,7 +94,7 @@ const AdminDashboard = () => {
       store_id,
     };
     axios
-      .post(`http://localhost:5000/products/`, adminAddProduct)
+      .post(`${API_URL}/products/`, adminAddProduct)
       .then((result) => {
         if (result.data.result) {
           setProducts([...products, result.data.result]);
@@ -127,13 +124,13 @@ const AdminDashboard = () => {
 
     axios
       .post(
-        `http://localhost:5000/categories/add`,
+        `${API_URL}/categories/add`,
         { name: newCategoryName },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       )
       .then((result) => {
         setCategories([...categories, result.data.category]);
@@ -153,20 +150,17 @@ const AdminDashboard = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get(
-        "http://localhost:5000/cart/allcompleted",
-        {
-          params: {
-            pageNumber: currentPage,
-            limit: 10,
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_URL}/cart/allcompleted`, {
+        params: {
+          pageNumber: currentPage,
+          limit: 10,
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setCompletedOrders(response.data.data);
       setTotalPages(response.data.pagination.totalPages);
@@ -179,23 +173,23 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/users/`).then((result) => {
+    axios.get(`${API_URL}/users/`).then((result) => {
       setUsers(result.data.result || []);
     });
 
-    axios.get(`http://localhost:5000/products/all`).then((result) => {
+    axios.get(`${API_URL}/products/all`).then((result) => {
       setProducts(result.data.products || []);
     });
 
     axios
-      .get(`http://localhost:5000/stores/all`)
+      .get(`${API_URL}/stores/all`)
       .then((result) => {
         setStores(result.data.result || []);
       })
       .catch((err) => console.log(err));
 
     axios
-      .get(`http://localhost:5000/categories/all`)
+      .get(`${API_URL}/categories/all`)
       .then((result) => {
         setCategories(result.data.categories || []);
       })
@@ -203,10 +197,10 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/users/`).then((result) => {
+    axios.get(`${API_URL}/users/`).then((result) => {
       setUsers(result.data.result || []);
     });
-    axios.get(`http://localhost:5000/products/all`).then((result) => {
+    axios.get(`${API_URL}/products/all`).then((result) => {
       setProducts(result.data.products || []);
     });
   }, []);
@@ -215,14 +209,11 @@ const AdminDashboard = () => {
     const getTotal = async () => {
       const token = localStorage.getItem("token");
       try {
-        const result = await axios.get(
-          `http://localhost:5000/cart/totalsales`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const result = await axios.get(`${API_URL}/cart/totalsales`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setTotalSales(result.data.total);
         setCSC(result.data.numOfCarts);
       } catch (err) {
@@ -235,7 +226,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const numOfStores = async () => {
       try {
-        const result = await axios.get(`http://localhost:5000/stores/all`);
+        const result = await axios.get(`${API_URL}/stores/all`);
         setStoresCount(result.data.result.length);
       } catch (err) {
         console.log(err);
@@ -486,7 +477,7 @@ const AdminDashboard = () => {
                     className="submit-product-btn"
                     onClick={productsAdmin}
                   >
-                    Save Product to Bretix 
+                    Save Product to Bretix
                   </button>
                 </div>
               )}
@@ -774,7 +765,7 @@ const AdminDashboard = () => {
                                       year: "numeric",
                                       month: "short",
                                       day: "numeric",
-                                    }
+                                    },
                                   )}
                                 </td>
                               </tr>

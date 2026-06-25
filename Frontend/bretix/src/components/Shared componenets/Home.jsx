@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "./ProductssGrid.css";
+import API_URL from "../../config/api";
 
 const Home = () => {
   const navigate = useNavigate();
   const [top10Products, setTop10Products] = useState([]);
-
 
   const [notification, setNotification] = useState({
     show: false,
@@ -23,7 +23,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/products/top10")
+      .get(`${API_URL}/products/top10`)
       .then((res) => {
         setTop10Products(res.data.result);
       })
@@ -55,11 +55,11 @@ const Home = () => {
     requestAnimationFrame(() => {
       flyingImg.style.setProperty(
         "--target-x",
-        `${cartRect.left + scrollLeft - rect.left}px`
+        `${cartRect.left + scrollLeft - rect.left}px`,
       );
       flyingImg.style.setProperty(
         "--target-y",
-        `${cartRect.top + scrollTop - rect.top}px`
+        `${cartRect.top + scrollTop - rect.top}px`,
       );
       flyingImg.classList.add("is-flying");
     });
@@ -83,7 +83,7 @@ const Home = () => {
 
     axios
       .post(
-        "http://localhost:5000/cart",
+        `${API_URL}/cart`,
         {
           products_id: product.id,
           quantity: 1,
@@ -92,7 +92,7 @@ const Home = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       )
       .then((res) => {
         const currentCount = parseInt(localStorage.getItem("cartCount") || "0");
@@ -108,7 +108,6 @@ const Home = () => {
 
   return (
     <div className="container-main">
-    
       {notification.show && (
         <div className={`notification-box ${notification.type}`}>
           {notification.message}

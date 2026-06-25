@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "./ProductDetails.css";
 import { FaPlus, FaMinus, FaCheckCircle } from "react-icons/fa";
-
+import API_URL from "../config/api";
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/products/${id}`)
+      .get(`${API_URL}/products/${id}`)
       .then((res) => {
         setProduct(res.data.product);
         setLoading(false);
@@ -30,7 +30,7 @@ const ProductDetails = () => {
         setLoading(false);
       });
   }, [id]);
-console.log(product);
+  console.log(product);
 
   const addToCart = async () => {
     const token = localStorage.getItem("token");
@@ -43,9 +43,9 @@ console.log(product);
 
     try {
       await axios.post(
-        "http://localhost:5000/cart",
+        `${API_URL}/cart`,
         { products_id: id, quantity: quantity },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       setShowToast(true);

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./ForgetPassword.css"; 
-
+import API_URL from "../../config/api";
 function ForgetPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -21,7 +21,7 @@ function ForgetPassword() {
     setMessage("");
 
     axios
-      .post("http://localhost:5000/users/request-forgot-password", {
+      .post(`${API_URL}/users/request-forgot-password`, {
         email,
       })
       .then((res) => {

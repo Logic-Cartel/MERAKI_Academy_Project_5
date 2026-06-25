@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { User, Phone, Globe, Calendar, Mail, Save, Award } from "lucide-react";
 import "./Profile.css";
-
+import API_URL from "../../config/api";
 function Profile() {
   const [user, setUser] = useState({
     firstname: "",
@@ -27,7 +27,7 @@ function Profile() {
     if (!token) return;
 
     axios
-      .get("http://localhost:5000/users/profile", {
+      .get(`${API_URL}/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -57,7 +57,7 @@ function Profile() {
   const updateProfile = () => {
     axios
       .put(
-        "http://localhost:5000/users/profile",
+        `${API_URL}/users/profile`,
         {
           ...user,
           email: newEmail,
@@ -74,7 +74,7 @@ function Profile() {
   const sendVerificationCode = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/users/request-email-change",
+        `${API_URL}/users/request-email-change`,
         { newEmail: newEmail.trim() },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -92,7 +92,7 @@ function Profile() {
     try {
       const trimmedCode = verificationCode.trim();
       await axios.put(
-        "http://localhost:5000/users/verify-email-change",
+        `${API_URL}/users/verify-email-change`,
         { code: trimmedCode },
         { headers: { Authorization: `Bearer ${token}` } }
       );

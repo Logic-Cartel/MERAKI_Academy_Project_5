@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import API_URL from "../../config/api";
 const Orders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -24,12 +24,12 @@ const Orders = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/cart/my-orders?page=${currentPage}`,
+        `${API_URL}/cart/my-orders?page=${currentPage}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       setOrders(response.data.orders);
@@ -52,62 +52,106 @@ const Orders = () => {
           Loading orders...
         </div>
       ) : orders.length === 0 ? (
-        <div style={{ 
-          textAlign: "center", 
-          padding: "60px",
-          background: "#f9fafb",
-          borderRadius: "12px"
-        }}>
+        <div
+          style={{
+            textAlign: "center",
+            padding: "60px",
+            background: "#f9fafb",
+            borderRadius: "12px",
+          }}
+        >
           <p style={{ fontSize: "18px", color: "#6b7280" }}>
             You haven't placed any orders yet.
           </p>
         </div>
       ) : (
         <>
-          <div style={{ 
-            background: "white", 
-            borderRadius: "12px", 
-            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-            overflow: "hidden"
-          }}>
+          <div
+            style={{
+              background: "white",
+              borderRadius: "12px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+              overflow: "hidden",
+            }}
+          >
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead style={{ background: "#f9fafb" }}>
                 <tr>
-                  <th style={{ padding: "16px", textAlign: "left", fontWeight: "600", color: "#374151" }}>
+                  <th
+                    style={{
+                      padding: "16px",
+                      textAlign: "left",
+                      fontWeight: "600",
+                      color: "#374151",
+                    }}
+                  >
                     Order ID
                   </th>
-                  <th style={{ padding: "16px", textAlign: "left", fontWeight: "600", color: "#374151" }}>
+                  <th
+                    style={{
+                      padding: "16px",
+                      textAlign: "left",
+                      fontWeight: "600",
+                      color: "#374151",
+                    }}
+                  >
                     Date
                   </th>
-                  <th style={{ padding: "16px", textAlign: "left", fontWeight: "600", color: "#374151" }}>
+                  <th
+                    style={{
+                      padding: "16px",
+                      textAlign: "left",
+                      fontWeight: "600",
+                      color: "#374151",
+                    }}
+                  >
                     Items
                   </th>
-                  <th style={{ padding: "16px", textAlign: "left", fontWeight: "600", color: "#374151" }}>
+                  <th
+                    style={{
+                      padding: "16px",
+                      textAlign: "left",
+                      fontWeight: "600",
+                      color: "#374151",
+                    }}
+                  >
                     Total
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {orders.map((order) => (
-                  <tr 
+                  <tr
                     key={order.order_id}
-                    style={{ 
+                    style={{
                       borderTop: "1px solid #e5e7eb",
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = "#f9fafb"}
-                    onMouseLeave={(e) => e.currentTarget.style.background = "white"}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.background = "#f9fafb")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.background = "white")
+                    }
                   >
                     <td style={{ padding: "16px" }}>
-                      <span style={{ 
-                        fontWeight: "600", 
-                        color: "#10b981",
-                        fontSize: "14px"
-                      }}>
+                      <span
+                        style={{
+                          fontWeight: "600",
+                          color: "#10b981",
+                          fontSize: "14px",
+                        }}
+                      >
                         #{order.order_id}
                       </span>
                     </td>
-                    <td style={{ padding: "16px", color: "#6b7280", fontSize: "14px" }}>
+                    <td
+                      style={{
+                        padding: "16px",
+                        color: "#6b7280",
+                        fontSize: "14px",
+                      }}
+                    >
                       {new Date(order.done_at).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
@@ -115,23 +159,27 @@ const Orders = () => {
                       })}
                     </td>
                     <td style={{ padding: "16px" }}>
-                      <span style={{ 
-                        display: "inline-block",
-                        padding: "4px 12px",
-                        background: "#f3f4f6",
-                        borderRadius: "12px",
-                        fontSize: "13px",
-                        color: "#6b7280"
-                      }}>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          padding: "4px 12px",
+                          background: "#f3f4f6",
+                          borderRadius: "12px",
+                          fontSize: "13px",
+                          color: "#6b7280",
+                        }}
+                      >
                         {order.num_of_products} items
                       </span>
                     </td>
-                    <td style={{ 
-                      padding: "16px", 
-                      fontWeight: "600", 
-                      color: "#059669",
-                      fontSize: "16px"
-                    }}>
+                    <td
+                      style={{
+                        padding: "16px",
+                        fontWeight: "600",
+                        color: "#059669",
+                        fontSize: "16px",
+                      }}
+                    >
                       ${parseFloat(order.total).toFixed(2)}
                     </td>
                   </tr>
@@ -141,13 +189,15 @@ const Orders = () => {
           </div>
 
           {totalPages > 1 && (
-            <div style={{ 
-              display: "flex", 
-              justifyContent: "center", 
-              alignItems: "center", 
-              gap: "12px",
-              marginTop: "30px"
-            }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "12px",
+                marginTop: "30px",
+              }}
+            >
               <button
                 onClick={() => setCurrentPage(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -176,7 +226,8 @@ const Orders = () => {
                   background: currentPage === totalPages ? "#e5e7eb" : "white",
                   border: "1px solid #d1d5db",
                   borderRadius: "8px",
-                  cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                  cursor:
+                    currentPage === totalPages ? "not-allowed" : "pointer",
                   fontWeight: "500",
                   color: "#374151",
                 }}

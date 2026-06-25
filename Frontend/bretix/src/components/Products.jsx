@@ -3,6 +3,7 @@ import axios from "axios";
 import "./ProductsGrid.css";
 import { Link, useLocation } from "react-router-dom";
 import SearchBar from "material-ui-search-bar";
+import API_URL from "../config/api";
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -24,21 +25,21 @@ function Products() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/products/all")
+      .get(`${API_URL}/products/all`)
       .then((res) => {
         setProducts(res.data.products || []);
       })
       .catch((err) => console.log("Error products:", err));
 
     axios
-      .get("http://localhost:5000/categories/")
+      .get(`${API_URL}/products/all`)
       .then((result) => {
         setCategory(result.data.categories || []);
       })
       .catch((err) => console.log("Error categories:", err));
 
     axios
-      .get("http://localhost:5000/stores/all")
+      .get(`${API_URL}/products/all`)
       .then((result) => {
         setStores(result.data.result || []);
       })
@@ -67,7 +68,7 @@ function Products() {
     ...new Set(
       products
         .filter((p) => !selectedCategory || p.categories_id == selectedCategory)
-        .map((p) => p.store_id)
+        .map((p) => p.store_id),
     ),
   ];
 
@@ -102,11 +103,11 @@ function Products() {
     requestAnimationFrame(() => {
       flyingImg.style.setProperty(
         "--target-x",
-        `${cartRect.left + scrollLeft - rect.left}px`
+        `${cartRect.left + scrollLeft - rect.left}px`,
       );
       flyingImg.style.setProperty(
         "--target-y",
-        `${cartRect.top + scrollTop - rect.top}px`
+        `${cartRect.top + scrollTop - rect.top}px`,
       );
       flyingImg.classList.add("is-flying");
     });
@@ -129,13 +130,13 @@ function Products() {
 
     axios
       .post(
-        "http://localhost:5000/cart",
+        `${API_URL}/cart`,
         {
           products_id: item.id,
           cart_id: localStorage.getItem("CartId"),
           quantity: 1,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       )
       .then(() => {
         const currentCount = parseInt(localStorage.getItem("cartCount") || "0");
@@ -158,50 +159,60 @@ function Products() {
       )}
 
       <div className="filter-controls">
-  
-  <div className="custom-dropdown-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
-    <div className={`custom-label ${selectedCategory === "" ? "active" : ""}`}>
-      {selectedCategory
-        ? category.find((c) => c.id == selectedCategory)?.name
-        : ""}
-    </div>
-    <select
-      className="category-dropdown-hidden"
-      value={selectedCategory}
-      onChange={(e) => setSelectedCategory(e.target.value)}
-      
-    >
-      <option value="">All Categories</option>
-      {category.map((cat) => (
-        <option key={cat.id} value={cat.id}>
-          {cat.name}
-        </option>
-      ))}
-    </select>
-  </div>
+        <div
+          className="custom-dropdown-wrapper"
+          style={{ position: "relative", display: "inline-block" }}
+        >
+          <div
+            className={`custom-label ${selectedCategory === "" ? "active" : ""}`}
+          >
+            {selectedCategory
+              ? category.find((c) => c.id == selectedCategory)?.name
+              : ""}
+          </div>
+          <select
+            className="category-dropdown-hidden"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            {category.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-
-  <div className="custom-dropdown-wrapper" style={{ position: 'relative', display: 'inline-block', marginLeft: '10px' }}>
-    <div className={`custom-label ${selectedStores === "" ? "active" : ""}`}>
-      {selectedStores
-        ? stores.find((s) => s.id == selectedStores)?.title
-        : ""}
-    </div>
-    <select
-      className="stores-dropdown-hidden"
-      value={selectedStores}
-      onChange={(e) => setSelectedStores(e.target.value)}
-      
-    >
-      <option value="">All Stores</option>
-      {filteredStore.map((store) => (
-        <option key={store.id} value={store.id}>
-          {store.title}
-        </option>
-      ))}
-    </select>
-  </div>
-</div>
+        <div
+          className="custom-dropdown-wrapper"
+          style={{
+            position: "relative",
+            display: "inline-block",
+            marginLeft: "10px",
+          }}
+        >
+          <div
+            className={`custom-label ${selectedStores === "" ? "active" : ""}`}
+          >
+            {selectedStores
+              ? stores.find((s) => s.id == selectedStores)?.title
+              : ""}
+          </div>
+          <select
+            className="stores-dropdown-hidden"
+            value={selectedStores}
+            onChange={(e) => setSelectedStores(e.target.value)}
+          >
+            <option value="">All Stores</option>
+            {filteredStore.map((store) => (
+              <option key={store.id} value={store.id}>
+                {store.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       <div className="search-bar-container">
         <SearchBar

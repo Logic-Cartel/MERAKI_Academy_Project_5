@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./ProductView.css";
 import Swal from "sweetalert2";
-
+import API_URL from "../../config/api";
 const ProductView = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -26,7 +26,7 @@ const ProductView = () => {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const result = await axios.get(`http://localhost:5000/categories/`);
+        const result = await axios.get(`${API_URL}/categories/`);
         setAllCategories(result.data.categories);
       } catch (err) {
         console.log(err);
@@ -40,12 +40,9 @@ const ProductView = () => {
 
     const getProduct = async () => {
       try {
-        const result = await axios.get(
-          `http://localhost:5000/products/${productId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const result = await axios.get(`${API_URL}/products/${productId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setProduct(result.data.product);
         setEditedProduct(result.data.product);
       } catch (err) {
@@ -58,7 +55,6 @@ const ProductView = () => {
   const confirm = async () => {
     const token = localStorage.getItem("token");
 
-
     const result = await Swal.fire({
       title: "Save Changes?",
       text: "Are you sure you want to update this product?",
@@ -70,29 +66,26 @@ const ProductView = () => {
       cancelButtonText: "Cancel",
     });
 
-    
     if (result.isConfirmed) {
-   
       Swal.fire({
         title: "Updating...",
         text: "Please wait while we save your changes.",
         allowOutsideClick: false,
         showConfirmButton: false,
         didOpen: () => {
-          Swal.showLoading(); 
+          Swal.showLoading();
         },
       });
 
       try {
- 
         await axios.put(
-          `http://localhost:5000/products/${productId}/update`,
+          `${API_URL}/products/${productId}/update`,
           {
             ...editedProduct,
           },
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
 
         setProduct(editedProduct);
@@ -134,7 +127,7 @@ const ProductView = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:5000/products/${productId}`, {
+          await axios.delete(`${API_URL}/products/${productId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 
@@ -202,9 +195,13 @@ const ProductView = () => {
                 <option value={editedProduct.category_id}>
                   {editedProduct.name}
                 </option>
-                {allCategories.map((cat)=>{
-                return <option value={cat.id} key={cat.id}>{cat.name}</option>
-              })}
+                {allCategories.map((cat) => {
+                  return (
+                    <option value={cat.id} key={cat.id}>
+                      {cat.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="input-field">

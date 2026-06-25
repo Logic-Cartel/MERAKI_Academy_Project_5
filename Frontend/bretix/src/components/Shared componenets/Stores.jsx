@@ -2,19 +2,19 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Stores.css";
-
+import API_URL from "../../config/api";
 const Stores = () => {
   const navigate = useNavigate();
   const [stores, setStores] = useState([]);
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/stores/all")
+      .get(`${API_URL}/stores/all`)
       .then((res) => {
-        setStores(res.data.result);
+        setStores(res.data.result || []);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("ERROR:", err);
       });
   }, []);
 
@@ -26,7 +26,7 @@ const Stores = () => {
       </div>
 
       <div className="stores-grid">
-        {stores.map((store) => (
+        {(stores || []).map((store) => (
           <div
             key={store.id}
             className="store-card"

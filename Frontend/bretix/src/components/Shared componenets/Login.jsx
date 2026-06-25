@@ -5,7 +5,7 @@ import "./Login.css";
 import { useDispatch } from "react-redux";
 import { clearRole, setRole } from "../../redux/roleSlice";
 import { useSelector } from "react-redux";
-
+import API_URL from "../../config/api";
 function Login() {
   const dispatch = useDispatch();
 
@@ -29,10 +29,10 @@ function Login() {
     setError("");
 
     axios
-      .post("http://localhost:5000/users/login", { email, password })
+      .post(`${API_URL}/users/login`, { email, password })
       .then((result) => {
         axios
-          .get("http://localhost:5000/cart/getCartWhereIsDeletedFalse", {
+          .get(`${API_URL}/cart/getCartWhereIsDeletedFalse`, {
             headers: {
               Authorization: `Bearer ${result.data.token}`,
             },

@@ -3,7 +3,7 @@ import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./CheckoutForm.css"; 
-
+import API_URL from "../../config/api";
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
@@ -53,7 +53,7 @@ const CheckoutForm = () => {
 
       axios
         .put(
-          `http://localhost:5000/cart/complete/${cartId}`,
+          `${API_URL}/cart/complete/${cartId}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         )

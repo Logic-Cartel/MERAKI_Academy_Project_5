@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
-
+import API_URL from "../../config/api";
 const Register = () => {
   const navigate = useNavigate();
 
@@ -39,7 +39,7 @@ const Register = () => {
       setErrorMessage("");
 
       const userRegisterResult = await axios.post(
-        "http://localhost:5000/users/register",
+        `${API_URL}/users/register`,
         {
           firstName,
           lastName,
@@ -50,13 +50,13 @@ const Register = () => {
           email,
           password,
           role_id,
-        }
+        },
       );
 
       const newUserId = userRegisterResult.data.user.id;
 
       if (role_id === 2) {
-        await axios.post("http://localhost:5000/stores/addnewstore", {
+        await axios.post(`${API_URL}/stores/addnewstore`, {
           title: storeTitle,
           logo: storeLogo,
           description: storeDescription,
@@ -70,8 +70,6 @@ const Register = () => {
         navigate("/login");
       }, 2000);
     } catch (err) {
-      console.error("REGISTER ERROR 👉", err);
-
       if (err.response?.status === 409) {
         setErrorMessage("Email already exists ❌");
       } else {

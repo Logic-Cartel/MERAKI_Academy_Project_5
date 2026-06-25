@@ -366,42 +366,30 @@ const requestEmailChange = async (req, res) => {
 
 const verifyEmailChange = async (req, res) => {
   try {
-    const userId = req.token.user_id;
+    const userId = req.token?.user_id;
+    if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
-    const code = String(req.body.code || "").trim();
-
-    if (!code) {
-      return res.status(400).json({
-        success: false,
-        message: "Verification code is required",
-      });
-    }
+    const code = String(req.body.code || "").replace(/\s/g, "");
 
     const result = await pool.query(
-      `SELECT pending_email, email_verification_code 
-       FROM users WHERE id=$1`,
+      `SELECT pending_email, email_verification_code FROM users WHERE id=$1`,
       [userId]
     );
 
     if (!result.rows.length) {
-      return res.status(400).json({
-        success: false,
-        message: "User not found",
-      });
+      return res.status(400).json({ success: false, message: "User not found" });
     }
 
     const user = result.rows[0];
+    const dbCode = String(user.email_verification_code || "").replace(/\s/g, "");
 
-    const dbCode = String(user.email_verification_code || "").trim();
+    console.log("DB Code:", dbCode, "User Input:", code);
 
-    if (dbCode !== code) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid verification code",
-      });
+    if (parseInt(dbCode) !== parseInt(code)) {
+      return res.status(400).json({ success: false, message: "Invalid verification code" });
     }
 
-    const updateResult = await pool.query(
+    await pool.query(
       `UPDATE users 
        SET email=pending_email,
            pending_email=NULL,
@@ -410,15 +398,10 @@ const verifyEmailChange = async (req, res) => {
       [userId]
     );
 
-    res.json({
-      success: true,
-      message: "Email updated successfully",
-    });
+    res.json({ success: true, message: "Email updated successfully" });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    console.error("verifyEmailChange error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 const changePassword = (req, res) => {

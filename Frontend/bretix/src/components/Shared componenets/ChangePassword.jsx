@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./ChangePassword.css";
-
+import API_URL from "../../config/api";
 function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -12,11 +12,10 @@ function ChangePassword() {
 
   const token = localStorage.getItem("token");
 
-
   const renderAnimatedLabel = (text) => {
     return text.split("").map((letter, index) => (
       <span key={index} className="char" style={{ "--index": index }}>
-        {letter === " " ? "\u00A0" : letter} 
+        {letter === " " ? "\u00A0" : letter}
       </span>
     ));
   };
@@ -24,9 +23,9 @@ function ChangePassword() {
   const submit = () => {
     axios
       .put(
-        "http://localhost:5000/users/change-password",
+        `${API_URL}/users/change-password`,
         { currentPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       )
       .then((res) => setMessage(res.data.message))
       .catch((err) => setMessage(err.response?.data?.message || "Error"));
@@ -37,9 +36,8 @@ function ChangePassword() {
       <h2>Change Password</h2>
 
       <div className="password-input-wrapper">
-
         <input
-          className="input passwordCC" 
+          className="input passwordCC"
           type={showCurrent ? "text" : "password"}
           placeholder=" "
           required
@@ -71,7 +69,9 @@ function ChangePassword() {
         </span>
       </div>
 
-      <button className="save-btn" onClick={submit}>Save</button>
+      <button className="save-btn" onClick={submit}>
+        Save
+      </button>
 
       {message && <p className="status-msg">{message}</p>}
     </div>

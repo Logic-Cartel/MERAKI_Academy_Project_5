@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import GoogleMapReact from "google-map-react";
 import SearchBar from "material-ui-search-bar";
+import API_URL from "../../config/api";
 
 import {
   Trash2,
   ShoppingBag,
   CreditCard,
   Truck,
-  MinusCircle, // تغيير الأيقونة
-  PlusCircle,  // تغيير الأيقونة
+  MinusCircle,
+  PlusCircle,
   MapPin,
   X,
   CheckCircle,
@@ -32,16 +33,23 @@ const Cart = () => {
   const [address, setAddress] = useState("Loading address...");
   const [selAddressData, setSelAddressData] = useState({});
 
-  const [toast, setToast] = useState({ show: false, message: "", type: "info" });
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "info",
+  });
 
   const showCustomToast = (msg, type = "info") => {
     setToast({ show: true, message: msg, type });
-    setTimeout(() => setToast({ show: false, message: "", type: "info" }), 3500);
+    setTimeout(
+      () => setToast({ show: false, message: "", type: "info" }),
+      3500,
+    );
   };
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/cart/with-products", {
+      .get(`${API_URL}/cart/with-products`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -61,9 +69,9 @@ const Cart = () => {
     const token = localStorage.getItem("token");
     axios
       .patch(
-        `http://localhost:5000/cart/${cartProductId}`,
+        `${API_URL}/cart/${cartProductId}`,
         { quantity: newQuantity },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       )
       .then(() => {
         if (newQuantity === 0) {
@@ -73,8 +81,8 @@ const Cart = () => {
             items.map((item) =>
               item.cart_product_id === cartProductId
                 ? { ...item, quantity: newQuantity }
-                : item
-            )
+                : item,
+            ),
           );
         }
       });
@@ -82,7 +90,7 @@ const Cart = () => {
 
   const total = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -99,9 +107,9 @@ const Cart = () => {
       const cartId = localStorage.getItem("cartId");
       axios
         .put(
-          `http://localhost:5000/cart/complete/${cartId}`,
+          `${API_URL}/cart/complete/${cartId}`,
           { payment_method: "COD" },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((res) => {
           localStorage.setItem(cartId, res.data.newCartId);
@@ -118,7 +126,7 @@ const Cart = () => {
 
   const handleSelLocationClick = async (lat, lng) => {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
     );
 
     const data = await response.json();
@@ -134,7 +142,7 @@ const Cart = () => {
           const lng = position.coords.longitude;
 
           const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
           );
 
           const data = await response.json();
@@ -144,7 +152,7 @@ const Cart = () => {
         (error) => {
           console.error(error.message);
           showCustomToast("Please enable location access", "error");
-        }
+        },
       );
     }
   };
@@ -158,12 +166,12 @@ const Cart = () => {
     if (selectedLocation) {
       localStorage.setItem(
         "deliveryLocation",
-        JSON.stringify(selectedLocation)
+        JSON.stringify(selectedLocation),
       );
       setShowLocationModal(false);
       showCustomToast(
-        `Location saved: ${selAddressData.country || ''} ${selAddressData.state || ''}`, 
-        "success"
+        `Location saved: ${selAddressData.country || ""} ${selAddressData.state || ""}`,
+        "success",
       );
     }
   };
@@ -186,7 +194,11 @@ const Cart = () => {
       {toast.show && (
         <div className={`premium-toast-container ${toast.type}`}>
           <div className="toast-content">
-            {toast.type === "success" ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+            {toast.type === "success" ? (
+              <CheckCircle size={20} />
+            ) : (
+              <AlertCircle size={20} />
+            )}
             <span>{toast.message}</span>
           </div>
           <div className="toast-progress"></div>
@@ -217,7 +229,6 @@ const Cart = () => {
                   <p className="unit-price">${item.price}</p>
                 </div>
 
-           
                 <div className="quantity-box-premium">
                   <button
                     className="qty-btn-neo minus"
@@ -227,9 +238,9 @@ const Cart = () => {
                   >
                     <MinusCircle size={22} strokeWidth={1.5} />
                   </button>
-                  
-                  <span className="qty-number" >{item.quantity}</span>
-                  
+
+                  <span className="qty-number">{item.quantity}</span>
+
                   <button
                     className="qty-btn-neo plus"
                     onClick={() =>

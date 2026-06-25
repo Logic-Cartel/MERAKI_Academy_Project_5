@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
-
+import API_URL from "../../config/api";
 function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -12,7 +12,7 @@ function ResetPassword() {
 
   const resetPassword = () => {
     axios
-      .post("http://localhost:5000/users/reset-password", {
+      .post(`${API_URL}/users/reset-password`, {
         token,
         newPassword,
       })

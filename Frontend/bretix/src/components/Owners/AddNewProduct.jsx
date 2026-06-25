@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "./AddNewProduct.css"; 
-
+import "./AddNewProduct.css";
+import API_URL from "../../config/api";
 const AddNewProduct = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -23,18 +23,19 @@ const AddNewProduct = () => {
   const [price, setPrice] = useState("");
   const [categories_id, setCategories_id] = useState("");
   const [store_id, setStore_id] = useState(id);
-  const [allCategories, setAllCategories] = useState([])
+  const [allCategories, setAllCategories] = useState([]);
 
-  useEffect(()=>{
-    const getCategories = async ()=>{
-      try{
-        const result = await axios.get(`http://localhost:5000/categories/`)
-        setAllCategories(result.data.categories)
-      }catch(err){console.log(err);
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const result = await axios.get(`${API_URL}/categories/`);
+        setAllCategories(result.data.categories);
+      } catch (err) {
+        console.log(err);
       }
-    }
-    getCategories()
-  },[])
+    };
+    getCategories();
+  }, []);
 
   const confirm = async () => {
     const token = localStorage.getItem("token");
@@ -44,19 +45,19 @@ const AddNewProduct = () => {
       title,
       description,
       price,
-      rate:0,
-      categories_id, 
+      rate: 0,
+      categories_id,
     };
     try {
       await axios.post(
-        "http://localhost:5000/stores/addnewproductinstore",
+        `${API_URL}/stores/addnewproductinstore`,
         {
           ...newProductData,
           store_id,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       navigate(`/${store_id}/allproducts`);
     } catch (err) {
@@ -84,10 +85,18 @@ const AddNewProduct = () => {
 
           <div className="input-group">
             <label>Category</label>
-            <select onChange={(e)=>{setCategories_id(e.target.value)}}>
-              <option >Choose Category</option>
-              {allCategories.map((cat)=>{
-                return <option value={cat.id} key={cat.id}>{cat.name}</option>
+            <select
+              onChange={(e) => {
+                setCategories_id(e.target.value);
+              }}
+            >
+              <option>Choose Category</option>
+              {allCategories.map((cat) => {
+                return (
+                  <option value={cat.id} key={cat.id}>
+                    {cat.name}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -117,7 +126,6 @@ const AddNewProduct = () => {
               onChange={(e) => setPrice(e.target.value)}
             />
           </div>
-
         </div>
 
         <button className="add-btn" onClick={confirm}>

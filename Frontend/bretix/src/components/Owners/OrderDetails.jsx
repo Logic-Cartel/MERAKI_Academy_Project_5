@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-
+import API_URL from "../../config/api";
 const OrderDetails = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -24,7 +24,7 @@ const OrderDetails = () => {
     const token = localStorage.getItem("token");
 
     axios
-      .get(`http://localhost:5000/stores/order-details/${order_id}`, {
+      .get(`${API_URL}/stores/order-details/${order_id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {

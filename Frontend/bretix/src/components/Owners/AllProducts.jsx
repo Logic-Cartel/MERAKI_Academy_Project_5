@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { 
-  Package, Leaf, Plus, Star, ArrowLeft 
-} from "lucide-react";
+import { Package, Leaf, Plus, Star, ArrowLeft } from "lucide-react";
 import "./StoreManagement.css";
-
+import API_URL from "../../config/api";
 const AllProducts = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -21,38 +19,47 @@ const AllProducts = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    axios.get(`http://localhost:5000/stores/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then((res) => setStoreInfo(res.data.result[0]))
-    .catch((err) => console.log(err));
+    axios
+      .get(`${API_URL}/stores/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => setStoreInfo(res.data.result[0]))
+      .catch((err) => console.log(err));
 
-    axios.get(`http://localhost:5000/stores/${id}/productsinstore`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then((res) => setStoreProducts(res.data.result))
-    .catch((err) => console.log(err));
+    axios
+      .get(`${API_URL}/stores/${id}/productsinstore`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => setStoreProducts(res.data.result))
+      .catch((err) => console.log(err));
   }, [id]);
 
   return (
     <div className="owner-dashboard-container">
       <aside className="owner-sidebar">
         <div className="owner-logo-section">
-          <div className="owner-logo-icon"><Leaf size={24} /></div>
+          <div className="owner-logo-icon">
+            <Leaf size={24} />
+          </div>
           <div className="owner-logo-text">
-            <h1>BRETIX <span>ECO</span></h1>
+            <h1>
+              BRETIX <span>ECO</span>
+            </h1>
             <p>Merchant Portal</p>
           </div>
         </div>
-        
+
         <nav className="owner-nav">
           <div className="owner-nav-item active">
             <Package size={20} /> <span>Product Inventory</span>
           </div>
         </nav>
-        
+
         <div className="owner-sidebar-footer">
-          <button className="owner-back-btn" onClick={() => navigate("/ownerstoremanagement")}>
+          <button
+            className="owner-back-btn"
+            onClick={() => navigate("/ownerstoremanagement")}
+          >
             <ArrowLeft size={18} /> <span>Back to Dashboard</span>
           </button>
         </div>
@@ -64,7 +71,7 @@ const AllProducts = () => {
             <h2>{storeInfo.title || "Store Inventory"}</h2>
             <p>Manage and monitor your sustainable products.</p>
           </div>
-          <button 
+          <button
             className="eco-add-btn"
             onClick={() => navigate(`/stores/${id}/addnewproduct`)}
           >
@@ -85,13 +92,15 @@ const AllProducts = () => {
                     {product.title}
                   </h3>
                   <div className="inventory-meta">
-                    <span className="inv-price">${product.price || "0.00"}</span>
+                    <span className="inv-price">
+                      ${product.price || "0.00"}
+                    </span>
                     <span className="inv-rate">
-                      <Star size={14} fill="#facc15" color="#facc15" /> 
+                      <Star size={14} fill="#facc15" color="#facc15" />
                       {product.rate}
                     </span>
                   </div>
-                  <button 
+                  <button
                     className="inv-edit-btn"
                     onClick={() => navigate(`/allproducts/${product.id}`)}
                   >
@@ -102,8 +111,8 @@ const AllProducts = () => {
             ))
           ) : (
             <div className="no-data-placeholder">
-               <Package size={60} />
-               <p>No products found in this store yet.</p>
+              <Package size={60} />
+              <p>No products found in this store yet.</p>
             </div>
           )}
         </div>

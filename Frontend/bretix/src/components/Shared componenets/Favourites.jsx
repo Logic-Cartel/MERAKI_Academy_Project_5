@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import API_URL from "../../config/api";
 const Favourites = () => {
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,30 +16,29 @@ const Favourites = () => {
 
     
     axios
-      .get("http://localhost:5000/favourites", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        setFavourites(res.data.favourites);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+  .get(`${API_URL}/favourites`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  .then((res) => {
+    setFavourites(res.data.favourites);
+    setLoading(false);
+  })
+  .catch((err) => {
+    console.error(err);
+    setLoading(false);
+  });
   }, [token, navigate]);
 
   
   const removeFromFavourites = (storeId) => {
-    axios
-      .delete(`http://localhost:5000/favourites/${storeId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(() => {
-        
-        setFavourites(favourites.filter((store) => store.id !== storeId));
-      })
-      .catch((err) => console.error(err));
+   axios
+  .delete(`${API_URL}/favourites/${storeId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  .then(() => {
+    setFavourites(favourites.filter((store) => store.id !== storeId));
+  })
+  .catch((err) => console.error(err));
   };
 
   if (loading) {

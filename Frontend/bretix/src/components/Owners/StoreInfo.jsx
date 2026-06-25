@@ -7,7 +7,7 @@ import {
   Store, Leaf, ArrowLeft, Save, RefreshCcw, Image as ImageIcon
 } from "lucide-react";
 import "./StoreManagement.css";
-
+import API_URL from "../../config/api";
 const StoreInfo = () => {
   const navigate = useNavigate();
   const { storeId } = useParams();
@@ -25,7 +25,7 @@ const StoreInfo = () => {
     const token = localStorage.getItem("token");
     const getStoreInfo = async () => {
       try {
-        const result = await axios.get(`http://localhost:5000/stores/${storeId}`, {
+        const result = await axios.get(`${API_URL}/stores/${storeId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = result.data.result[0];
@@ -58,7 +58,7 @@ const StoreInfo = () => {
       });
 
       try {
-        await axios.put(`http://localhost:5000/stores/${storeId}/update`, storeInfoEdition, {
+        await axios.put(`${API_URL}/stores/${storeId}/update`, storeInfoEdition, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setStoreInfo(storeInfoEdition);

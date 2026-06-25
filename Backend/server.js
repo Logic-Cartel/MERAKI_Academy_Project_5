@@ -39,11 +39,11 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 app.use("/users", usersRouter);
-app.use("/favourites", favouritesRouter);
-app.use("/categories", categoriesRouter);
-app.use("/cart", cartRouter);
 app.use("/products", productsRouter);
 app.use("/stores", storesRouter);
+app.use("/categories", categoriesRouter);
+app.use("/cart", cartRouter);
+app.use("/favourites", favouritesRouter);
 
 app.use((req, res) => res.status(404).json("NO content at this path"));
 

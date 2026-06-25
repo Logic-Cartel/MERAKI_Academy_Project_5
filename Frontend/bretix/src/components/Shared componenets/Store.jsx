@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./Singlestore1.css";
-
+import API_URL from "../../config/api";
 const Store = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -17,20 +17,20 @@ const Store = () => {
       try {
         setIsLoading(true);
 
-        const storeResponse = await axios.get(
-          `http://localhost:5000/stores/${id}`
-        );
+        const storeResponse = await axios.get(`${API_URL}/stores/${id}`);
         setStore(storeResponse.data.result[0]);
 
         const productsResponse = await axios.get(
-          `http://localhost:5000/stores/${id}/products`
+          `${API_URL}/stores/${id}/products`,
         );
         setProducts(productsResponse.data.result);
 
         if (token) {
           const favResponse = await axios.get(
-            `http://localhost:5000/favourites/check/${id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            `${API_URL}/favourites/check/${id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
           );
           setIsFavourite(favResponse.data.isFavourite);
         }
@@ -53,15 +53,15 @@ const Store = () => {
 
     try {
       if (isFavourite) {
-        await axios.delete(`http://localhost:5000/favourites/${id}`, {
+        await axios.delete(`${API_URL}/favourites/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setIsFavourite(false);
       } else {
         await axios.post(
-          "http://localhost:5000/favourites",
+          `${API_URL}/favourites`,
           { store_id: parseInt(id) },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         setIsFavourite(true);
       }
