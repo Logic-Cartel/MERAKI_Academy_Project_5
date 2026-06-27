@@ -183,14 +183,19 @@ const requestForgotPassword = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("FULL ERROR LOG:", err); 
-    
-    return res.status(500).json({
-      success: false,
-      message: "Server internal error",
-      error: err.message, 
-    });
-  }
+  console.error("STATUS:", err.code);
+  console.error(
+    "BODY:",
+    JSON.stringify(err.response?.body, null, 2)
+  );
+  console.error("FULL ERROR:", err);
+
+  return res.status(500).json({
+    success: false,
+    message: "Server internal error",
+    error: err.message,
+  });
+}
 };
 
 const resetPassword = (req, res) => {
