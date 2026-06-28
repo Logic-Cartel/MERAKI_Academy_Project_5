@@ -22,7 +22,7 @@ app.use(
       "https://aesthetic-dango-b61ce6.netlify.app",
       "https://meraki-academy-project-5-4.onrender.com",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
